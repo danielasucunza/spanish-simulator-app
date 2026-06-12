@@ -1,0 +1,14 @@
+{
+  "name": "real-spanish-travel-simulator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Netlify-ready Real Spanish Travel Simulator with secure AI pronunciation feedback.",
+  "scripts": {
+    "start": "netlify dev",
+    "deploy": "netlify deploy --prod"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.38.1"
+  }
+}
+

@@ -1,0 +1,3238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1fb5a6" />
+  <meta name="description" content="Practice real-life travel Spanish for Latin America with dialogues, audio, pronunciation feedback, and phrase sheets." />
+  <title>Real Spanish Travel Simulator</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <style>
+    :root {
+      --cream: #fff6ec;
+      --card: #fffdf8;
+      --ink: #202024;
+      --muted: #8c8d99;
+      --border: #e6e7e8;
+      --orange: #ff7a2f;
+      --orange-dark: #ef6a25;
+      --teal: #1fb5a6;
+      --teal-dark: #0d3d4a;
+      --yellow: #ffd879;
+      --red: #c94136;
+      --green: #1f9b72;
+      --purple-top: #493546;
+      --shadow: 0 8px 20px rgba(45, 35, 25, 0.07);
+      --shadow-hover: 0 14px 30px rgba(45, 35, 25, 0.11);
+      --radius: 26px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      border-top: 14px solid var(--purple-top);
+      background: var(--cream);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: 0.6; }
+
+    h1, h2, h3 {
+      font-family: Georgia, "DM Serif Display", "Playfair Display", serif;
+      letter-spacing: -0.02em;
+      line-height: 1.08;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 253, 248, 0.96);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(40, 30, 20, 0.06);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav {
+      width: min(1140px, calc(100% - 32px));
+      min-height: 84px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--orange-dark);
+      min-width: 260px;
+    }
+
+    .brand-mark {
+      display: block;
+      width: 54px;
+      height: 54px;
+      border-radius: 15px;
+      box-shadow: 0 8px 18px rgba(13, 61, 74, 0.12);
+    }
+
+    .brand-copy {
+      display: grid;
+      gap: 1px;
+      line-height: 1.08;
+    }
+
+    .brand-copy span {
+      color: var(--teal-dark);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-family: Inter, system-ui, sans-serif;
+    }
+
+    .brand-copy strong {
+      color: var(--orange);
+      font-family: Georgia, "DM Serif Display", serif;
+      font-size: clamp(1.25rem, 2vw, 1.62rem);
+      font-weight: 900;
+    }
+
+    .brand-copy em {
+      display: block;
+      color: var(--teal-dark);
+      font-family: Inter, system-ui, sans-serif;
+      font-style: normal;
+      font-size: 0.62em;
+      font-weight: 950;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-link {
+      background: transparent;
+      color: #4d4e58;
+      border-radius: 14px;
+      padding: 10px 16px;
+      font-weight: 800;
+    }
+
+    .nav-link.active,
+    .nav-link:hover {
+      background: #fff0e5;
+      color: var(--orange);
+    }
+
+    main {
+      width: min(1140px, calc(100% - 32px));
+      margin: 0 auto;
+      min-height: calc(100vh - 210px);
+      padding: 0 0 64px;
+    }
+
+    .hero {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      min-height: 630px;
+      padding: 82px 24px 96px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: white;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.06) 2px, transparent 2px),
+        linear-gradient(0deg, rgba(255,255,255,0.06) 2px, transparent 2px),
+        linear-gradient(135deg, #197d7b 0%, #2caaa0 100%);
+      background-size: 43px 43px, 43px 43px, auto;
+    }
+
+    .hero-inner { width: min(880px, 100%); }
+    .hero h1 { margin: 26px auto 18px; font-size: clamp(3rem, 6vw, 5rem); color: white; }
+    .hero .accent { color: var(--yellow); }
+    .hero p { margin: 0 auto; max-width: 760px; color: #e9f4f3; font-size: clamp(1.1rem, 2vw, 1.45rem); font-weight: 650; }
+
+    .eyebrow,
+    .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      color: var(--yellow);
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      padding: 10px 16px;
+    }
+
+    .label { color: var(--muted); }
+
+    .hero-actions,
+    .row-actions,
+    .footer-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-actions { justify-content: center; margin-top: 34px; }
+    .footer-actions { margin-top: 18px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 999px;
+      min-height: 46px;
+      padding: 13px 24px;
+      font-weight: 900;
+      transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.02); }
+    .btn-primary { background: var(--orange); color: white; box-shadow: 0 12px 24px rgba(242,112,36,0.22); }
+    .btn-primary:hover { background: var(--orange-dark); }
+    .btn-secondary { background: var(--card); color: var(--ink); border: 1px solid var(--border); }
+    .hero .btn-secondary { background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.35); }
+    .btn-teal { background: var(--teal); color: white; }
+    .btn-yellow { background: var(--yellow); color: var(--ink); }
+    .btn-small { min-height: 36px; padding: 8px 14px; font-size: 0.9rem; }
+    .btn-audio-active { background: var(--teal-dark); color: white; border-color: var(--teal-dark); }
+
+    .section-title {
+      margin: 64px 0 28px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .section-title h2 { margin: 0; font-size: clamp(1.8rem, 3vw, 2.3rem); }
+    .section-title p { margin: 8px 0 0; color: var(--muted); font-size: 1.08rem; font-weight: 650; }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin: 28px 0;
+    }
+
+    .path-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .path-card.active {
+      border-color: rgba(35,143,140,0.42);
+      box-shadow: 0 18px 42px rgba(35,143,140,0.14);
+    }
+
+    .path-card.done::after {
+      content: "✓";
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--teal);
+      color: white;
+      font-weight: 950;
+    }
+
+    .path-number {
+      display: inline-grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      background: #e8f7f5;
+      color: var(--teal);
+      font-weight: 950;
+      margin-bottom: 12px;
+    }
+
+    .guided-note {
+      margin: 28px 0;
+      padding: 20px 24px;
+      border-radius: 22px;
+      background: #e8f7f5;
+      border: 1px solid rgba(35,143,140,0.2);
+      color: #155f60;
+      font-weight: 800;
+    }
+
+    .guided-next {
+      margin-top: 28px;
+      display: grid;
+    }
+
+    .guided-next .btn {
+      width: 100%;
+      min-height: 58px;
+      font-size: 1.05rem;
+    }
+
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 28px 18px 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-icon { display: block; font-size: 2rem; margin-bottom: 12px; }
+    .stat strong { display: block; color: var(--teal); font-family: Georgia, serif; font-size: 2.55rem; line-height: 1; }
+    .stat span:last-child { color: var(--muted); font-size: 0.76rem; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .module-card,
+    .card,
+    .practice-card,
+    .dialogue-list,
+    .question-card,
+    .phrase-card,
+    .detail-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .module-card {
+      overflow: hidden;
+      min-height: 380px;
+      display: grid;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .module-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+    .module-card.locked {
+      position: relative;
+      cursor: pointer;
+      background: #efede8;
+      border-color: #d5cec5;
+      box-shadow: none;
+      filter: grayscale(0.75);
+      opacity: 0.78;
+    }
+
+    .module-card.locked::after {
+      content: "🔒 Full Access";
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      border-radius: 999px;
+      padding: 8px 13px;
+      background: rgba(32,32,36,0.82);
+      color: white;
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+
+    .module-card.locked:hover {
+      filter: grayscale(0.45);
+      opacity: 0.92;
+      transform: translateY(-2px);
+    }
+
+    .module-card.locked .module-banner { filter: saturate(0.25); }
+    .module-card.locked .progress-wrap { display: none; }
+
+    .module-banner {
+      min-height: 138px;
+      display: grid;
+      place-items: center;
+      font-size: 3.2rem;
+      background: linear-gradient(135deg, #1d8d8b, #38bbb4);
+    }
+
+    .module-card:nth-child(2n) .module-banner { background: linear-gradient(135deg, #f07022, #ff9969); }
+    .module-card:nth-child(3n) .module-banner { background: linear-gradient(135deg, #c9352e, #ee766d); }
+    .module-card:nth-child(4n) .module-banner { background: linear-gradient(135deg, #a794c9, #c6aedc); }
+    .module-card:nth-child(5n) .module-banner { background: linear-gradient(135deg, #80bad8, #9fcee4); }
+    .module-card:nth-child(6n) .module-banner { background: linear-gradient(135deg, #7fd29a, #a5e0b8); }
+    .module-card:nth-child(7n) .module-banner { background: linear-gradient(135deg, #df8882, #edaaa4); }
+    .module-card:nth-child(8n) .module-banner { background: linear-gradient(135deg, #76c7b0, #99dfcf); }
+    .module-card.locked .module-banner { background: linear-gradient(135deg, #a7a39d, #d8d2ca) !important; }
+    .module-card.locked h3,
+    .module-card.locked p { color: #6f6b68; }
+
+    .module-content {
+      padding: 28px 26px 26px;
+      display: grid;
+      grid-template-rows: auto 1fr auto auto;
+      gap: 14px;
+    }
+
+    .module-card h3 { margin: 0 0 8px; font-family: Inter, system-ui, sans-serif; font-size: 1.35rem; letter-spacing: 0; }
+    .module-card p { margin: 0; color: var(--muted); font-size: 1rem; font-weight: 650; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      border-radius: 999px;
+      padding: 7px 14px;
+      background: #e8f7f5;
+      color: var(--teal);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .badge.orange { background: #fff0e5; color: var(--orange); }
+    .badge.gray { background: #f2eee8; color: #aaa4a0; }
+
+    .progress-wrap {
+      height: 8px;
+      border-radius: 999px;
+      background: #eee8df;
+      overflow: hidden;
+    }
+
+    .progress-bar { height: 100%; border-radius: 999px; background: var(--teal); width: 0%; transition: width 0.25s ease; }
+
+    .unlock-panel {
+      position: relative;
+      overflow: hidden;
+      margin: 34px 0;
+      padding: 38px;
+      border-radius: var(--radius);
+      background: radial-gradient(circle at top right, rgba(255,216,121,0.24), transparent 32%), linear-gradient(135deg, #133238, #238f8c);
+      color: white;
+      box-shadow: var(--shadow-hover);
+    }
+
+    .unlock-panel::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      top: -90px;
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .unlock-panel h2 {
+      margin: 10px 0 12px;
+      color: white;
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+
+    .unlock-panel p { max-width: 760px; color: rgba(255,255,255,0.9); font-weight: 750; }
+    .unlock-panel .btn {
+      position: relative;
+      z-index: 1;
+      transform: scale(1.02);
+      box-shadow: 0 16px 30px rgba(255, 216, 121, 0.22);
+    }
+
+    .result-panel,
+    .lead-panel {
+      margin-top: 34px;
+      padding: 36px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .result-score {
+      display: inline-grid;
+      place-items: center;
+      width: 118px;
+      height: 118px;
+      border-radius: 999px;
+      background: var(--teal);
+      color: white;
+      font-family: Georgia, serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      margin: 8px 0 18px;
+    }
+
+    .lead-panel form {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .email-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.94rem;
+      font-weight: 650;
+    }
+
+    .next-step-card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #153940, #269690);
+      color: white;
+      border: 0;
+      box-shadow: 0 18px 36px rgba(21, 57, 64, 0.18);
+    }
+
+    .next-step-card::after {
+      content: "";
+      position: absolute;
+      right: -44px;
+      top: -60px;
+      width: 180px;
+      height: 180px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .next-step-card .label { color: var(--yellow); }
+    .next-step-card p { color: rgba(255,255,255,0.92); position: relative; z-index: 1; }
+    .next-step-card .btn { position: relative; z-index: 1; margin-top: 12px; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(14, 16, 18, 0.64);
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-card {
+      width: min(100%, 560px);
+      border-radius: 28px;
+      padding: 30px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.24);
+    }
+
+    .modal-card h2 {
+      margin: 8px 0 12px;
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+
+    .modal-card p {
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    .mission-result {
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #e9f8f2;
+      border: 1px solid #bde8d8;
+      color: #16614d;
+    }
+
+    .course-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .module-head {
+      margin-top: 34px;
+    }
+
+    .back-link {
+      background: transparent;
+      padding: 0;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .module-icon-large { display: block; margin: 34px 0 18px; font-size: 3.4rem; }
+    .module-head h1 { margin: 0 0 16px; font-size: clamp(2.5rem, 5vw, 3.6rem); }
+    .module-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: var(--muted); font-weight: 800; }
+
+    .tabs {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 36px 0 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      border-radius: 999px;
+      padding: 11px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: #52525c;
+      font-weight: 900;
+    }
+
+    .tab.active { background: var(--teal); border-color: var(--teal); color: white; }
+
+    .scenario-card,
+    .info-strip {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .scenario-card { margin: 32px 0 28px; color: #4d4d58; font-size: 1.1rem; }
+    .info-strip { background: #eee8df; box-shadow: none; border: 0; padding: 16px 22px; margin: 16px 0 24px; }
+
+    .dialogue-list {
+      overflow: hidden;
+      margin-top: 26px;
+    }
+
+    .dialogue-line {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 16px;
+      align-items: start;
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dialogue-line:last-child { border-bottom: 0; }
+    .dialogue-line:nth-child(odd) { background: #e5f6f6; }
+    .dialogue-line:nth-child(even) { background: #fff1e5; }
+
+    .speaker-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--teal);
+      color: white;
+    }
+
+    .speaker {
+      color: #777985;
+      font-size: 0.86rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .spanish-line { font-size: 1.15rem; font-weight: 780; }
+    .translation { color: var(--muted); margin-top: 6px; }
+    mark { background: var(--yellow); color: #5c410a; border-radius: 7px; padding: 1px 5px; }
+
+    .activity-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin: 42px 0 22px;
+    }
+
+    .activity-heading h2 { margin: 0; font-size: 1.8rem; }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .grid-one {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .phrase-card,
+    .question-card,
+    .practice-card,
+    .card {
+      padding: 28px 30px;
+    }
+
+    .phrase-card .spanish,
+    .vocab-word {
+      color: var(--teal);
+      font-size: 1.35rem;
+      font-weight: 900;
+    }
+
+    .phrase-card.featured { border-color: var(--orange); }
+    .phrase-card.featured .spanish { color: var(--orange); }
+
+    .options { display: grid; gap: 10px; margin-top: 16px; }
+    .option { width: 100%; text-align: left; background: #fbf7f1; border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; }
+    .option.correct { background: rgba(31,155,114,0.12); border-color: rgba(31,155,114,0.34); }
+    .option.incorrect { background: rgba(201,65,54,0.12); border-color: rgba(201,65,54,0.34); }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fffefa;
+      color: var(--ink);
+      padding: 13px 16px;
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { outline: 3px solid rgba(35,143,140,0.18); border-color: var(--teal); }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .question-card strong input {
+      display: inline-block;
+      width: min(270px, 100%);
+      margin: 0 6px;
+      vertical-align: middle;
+    }
+
+    .feedback {
+      background: #e8f7f5;
+      border: 1px solid rgba(35,143,140,0.2);
+      border-radius: 18px;
+      padding: 14px 16px;
+      color: #155f60;
+      font-weight: 750;
+      margin-top: 14px;
+    }
+
+    .warning {
+      background: #fff8df;
+      border: 1px solid var(--yellow);
+      color: #725108;
+    }
+
+    .record-panel {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 18px;
+      background: #fbf7f1;
+      border: 1px solid var(--border);
+    }
+
+    audio { width: 100%; margin-top: 10px; }
+
+    .voice-panel {
+      background: #fff8df;
+      border: 1px solid var(--yellow);
+      border-radius: 20px;
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .voice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+      margin-top: 12px;
+    }
+
+    .voice-grid label {
+      display: grid;
+      gap: 6px;
+      color: #725108;
+      font-weight: 900;
+      font-size: 0.86rem;
+    }
+
+    .review-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .review-choice {
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: #fffefa;
+      color: var(--ink);
+      padding: 18px;
+      display: grid;
+      gap: 6px;
+      min-height: 112px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-family: inherit;
+    }
+
+    .review-choice:hover {
+      transform: translateY(-2px);
+      border-color: var(--teal);
+      box-shadow: var(--shadow);
+    }
+
+    .review-choice strong {
+      font-size: 1.1rem;
+    }
+
+    .review-choice span {
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+
+    .pronunciation-score {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 70px;
+      height: 70px;
+      border-radius: 999px;
+      background: var(--teal);
+      color: white;
+      font-family: Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 900;
+      margin-right: 12px;
+    }
+
+    .pronunciation-result {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .challenge-panel {
+      position: relative;
+      overflow: hidden;
+      max-width: 1140px;
+      margin: 44px auto 0;
+      padding: 44px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #142f35, #173f3e);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .challenge-panel::after {
+      content: "";
+      position: absolute;
+      right: -44px;
+      top: -66px;
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+
+    .challenge-panel h1 { margin: 22px 0 28px; color: white; font-size: clamp(2rem, 4vw, 2.8rem); }
+    .challenge-panel .card { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.14); color: white; box-shadow: none; }
+    .challenge-panel .label { color: #b9c8c7; }
+    .challenge-panel .phrase-card .spanish { color: var(--yellow); }
+    .challenge-panel input { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); color: white; }
+    .challenge-panel input::placeholder { color: rgba(255,255,255,0.62); }
+
+    .detail-panel { padding: 36px 44px; margin-top: 34px; }
+    .detail-panel h2 { margin: 0 0 24px; font-size: 1.8rem; }
+    .detail-row { display: grid; grid-template-columns: 1fr auto auto 18px; gap: 18px; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--border); }
+    .detail-row:last-child { border-bottom: 0; }
+    .status-dot { width: 14px; height: 14px; border-radius: 999px; background: #ded8cc; }
+    .status-dot.active { background: #e8a21c; }
+
+    .review-card {
+      text-align: center;
+      padding: 42px 30px;
+    }
+
+    .review-card .big-spanish {
+      color: var(--teal);
+      font-family: Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin: 12px 0;
+    }
+
+    .country-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .site-footer {
+      background: #18191c;
+      color: #d4d4d4;
+      text-align: center;
+      padding: 42px 24px;
+    }
+
+    .site-footer strong { display: block; color: #fffefa; margin-bottom: 6px; }
+    .hidden { display: none !important; }
+
+    @media (max-width: 900px) {
+      .dashboard { grid-template-columns: repeat(2, 1fr); }
+      .module-grid, .grid-two, .country-grid, .path-grid { grid-template-columns: 1fr; }
+      .dialogue-line { grid-template-columns: 42px 1fr; }
+      .dialogue-line .btn { grid-column: 1 / -1; }
+      .field-row, .record-panel, .detail-row { grid-template-columns: 1fr; }
+      .pronunciation-result { grid-template-columns: 1fr; }
+      .voice-grid, .review-actions { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      body { border-top-width: 10px; }
+      .nav { align-items: flex-start; flex-direction: column; padding: 12px 0; }
+      .brand { min-width: 0; }
+      .brand-mark { width: 48px; height: 48px; border-radius: 13px; }
+      .nav-links { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); }
+      .nav-link { padding: 9px 6px; font-size: 0.82rem; }
+      main { width: min(100% - 22px, 1140px); }
+      .hero { min-height: 560px; }
+      .dashboard { grid-template-columns: 1fr; }
+      .section-title { align-items: flex-start; flex-direction: column; }
+      .scenario-card, .phrase-card, .question-card, .practice-card, .card, .detail-panel, .challenge-panel { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <nav class="nav" aria-label="Main navigation">
+        <div class="brand">
+          <img class="brand-mark" src="icon-192.png" alt="Real Spanish Travel Simulator app icon">
+          <div class="brand-copy">
+            <span>The Online Spanish Teacher</span>
+            <strong>Real Spanish <em>Travel Simulator</em></strong>
+          </div>
+        </div>
+        <div class="nav-links">
+          <button class="nav-link active" data-view="home">🏠 Home</button>
+          <button class="nav-link" data-view="modules">📚 Modules</button>
+          <button class="nav-link" data-view="assessment">🎯 Final Quiz</button>
+          <button class="nav-link" data-view="review">🔁 Review</button>
+          <button class="nav-link" data-view="homework">🧭 Missions</button>
+          <button class="nav-link" data-view="daily">⚡ Daily</button>
+          <button class="nav-link" data-view="progress">📊 Progress</button>
+        </div>
+      </nav>
+    </header>
+
+    <main id="app" aria-live="polite"></main>
+    <form name="student-results" data-netlify="true" hidden>
+      <input type="text" name="name">
+      <input type="email" name="email">
+      <input type="text" name="score">
+      <input type="text" name="modules">
+      <input type="text" name="completedAt">
+    </form>
+    <footer class="site-footer">
+      <strong>Real Spanish Travel Simulator — Practice real-life travel Spanish 🌎</strong>
+      <span>Audio, speaking, review, travel missions, and practical confidence for Latin America.</span>
+    </footer>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "realSpanishTravelCompleteCourse";
+    const FREE_MODULE_IDS = ["airport", "hotel", "restaurant", "health", "excursions", "shopping", "people", "final"];
+    const CORE_MODULE_IDS = ["airport", "hotel", "restaurant", "health", "excursions", "shopping", "people"];
+    const COURSE_URL = "https://theonlinespanishteacher.systeme.io/realspanish-to-travel";
+    const RESULT_CAPTURE_URL = "";
+    const LEAD_FORM_NAME = "student-results";
+    const PREMIUM_VOICES = {
+      narrator: "cedar",
+      local: "alloy",
+      coach: "fable",
+      neutral: "alloy"
+    };
+    const app = document.querySelector("#app");
+    const navButtons = document.querySelectorAll(".nav-link");
+
+    const modules = [
+      {
+        id: "airport",
+        title: "Airport & Transport",
+        icon: "✈️",
+        level: "A1-A2",
+        focus: "Arrival, immigration, time, taxis, directions to your first stop.",
+        summary: "Answer immigration questions, understand arrival logistics, and get safely to your accommodation.",
+        scenario: "You land in Latin America, go through immigration, collect your bag, and take transport into the city.",
+        countryNotes: [
+          ["Colombia", "People often use polite service phrases like '¿Me regala...?' for requests."],
+          ["Argentina", "You may hear 'remís' for a private car service and 'subte' for subway in Buenos Aires."],
+          ["Mexico", "In airports, 'migración' and 'aduana' are common signs for immigration and customs."]
+        ],
+        dialogues: [
+          {
+            title: "Immigration desk",
+            lines: [
+              ["Oficial", "Buenos días. Su pasaporte, por favor.", "Good morning. Your passport, please.", ["pasaporte"]],
+              ["Viajero/a", "Buenos días. Aquí tiene mi pasaporte.", "Good morning. Here is my passport.", ["Aquí tiene"]],
+              ["Oficial", "¿Cuál es el motivo de su visita?", "What is the purpose of your visit?", ["motivo de su visita"]],
+              ["Viajero/a", "Vengo de vacaciones y voy a visitar Bogotá.", "I'm here on vacation and I'm going to visit Bogotá.", ["Vengo de vacaciones", "voy a visitar"]],
+              ["Oficial", "¿Cuánto tiempo se va a quedar?", "How long are you going to stay?", ["Cuánto tiempo", "se va a quedar"]],
+              ["Viajero/a", "Me voy a quedar diez días.", "I'm going to stay ten days.", ["Me voy a quedar"]],
+              ["Oficial", "¿Dónde se va a hospedar?", "Where are you going to stay?", ["hospedar"]],
+              ["Viajero/a", "Me hospedo en un hotel en el centro. Tengo una reserva.", "I'm staying at a hotel downtown. I have a reservation.", ["Me hospedo", "Tengo una reserva"]]
+            ]
+          },
+          {
+            title: "Taxi from the airport",
+            lines: [
+              ["Taxista", "Buenas tardes. ¿A dónde va?", "Good afternoon. Where are you going?", ["A dónde va"]],
+              ["Viajero/a", "Voy al Hotel Central, por favor.", "I'm going to Hotel Central, please.", ["Voy al"]],
+              ["Taxista", "Claro. Está a unos treinta minutos.", "Of course. It's about thirty minutes away.", ["treinta minutos"]],
+              ["Viajero/a", "Perfecto. ¿Cuánto cuesta aproximadamente?", "Perfect. About how much does it cost?", ["Cuánto cuesta"]],
+              ["Taxista", "Más o menos cincuenta mil pesos.", "More or less fifty thousand pesos.", ["Más o menos"]],
+              ["Viajero/a", "Gracias. ¿Puedo pagar con tarjeta?", "Thanks. Can I pay by card?", ["pagar con tarjeta"]]
+            ]
+          }
+        ],
+        vocabulary: [
+          ["el pasaporte", "passport", "Aquí tiene mi pasaporte.", "Here is my passport."],
+          ["migración", "immigration", "Voy a pasar por migración.", "I'm going through immigration."],
+          ["aduana", "customs", "Después de migración está la aduana.", "After immigration is customs."],
+          ["el motivo", "purpose / reason", "¿Cuál es el motivo de su visita?", "What is the purpose of your visit?"],
+          ["quedarse", "to stay", "Me voy a quedar diez días.", "I'm going to stay ten days."],
+          ["hospedarse", "to stay / lodge", "Me hospedo en un hotel.", "I'm staying at a hotel."],
+          ["el equipaje", "luggage", "Mi equipaje no llegó.", "My luggage didn't arrive."],
+          ["la dirección", "address", "Esta es la dirección del hotel.", "This is the hotel address."],
+          ["¿Cuánto tarda?", "How long does it take?", "¿Cuánto tarda al centro?", "How long does it take to downtown?"],
+          ["¿Cuánto cuesta?", "How much does it cost?", "¿Cuánto cuesta el taxi?", "How much does the taxi cost?"],
+          ["la tarjeta", "card", "¿Puedo pagar con tarjeta?", "Can I pay by card?"],
+          ["la salida", "exit / departure", "¿Dónde está la salida?", "Where is the exit?"]
+        ],
+        phraseBank: [
+          ["Aquí tiene mi pasaporte.", "Here is my passport.", "Handing your passport or ID to an official.", "Aquí está mi pasaporte."],
+          ["Vengo de vacaciones.", "I'm here on vacation.", "Answering the purpose of your visit.", "Estoy de turismo."],
+          ["Me voy a quedar diez días.", "I'm going to stay ten days.", "Saying your length of stay.", "Voy a quedarme diez días."],
+          ["Me hospedo en un hotel.", "I'm staying at a hotel.", "Explaining your accommodation.", "Me quedo en un hotel."],
+          ["Tengo una reserva.", "I have a reservation.", "For hotels, flights, tours, or restaurants.", "Ya tengo una reserva."],
+          ["¿Dónde está la salida?", "Where is the exit?", "Finding your way in airports or stations.", "¿Por dónde salgo?"],
+          ["Voy al centro.", "I'm going downtown.", "Giving your destination to a driver.", "Voy para el centro."],
+          ["¿Cuánto tarda?", "How long does it take?", "Transport, food, lines, and waiting.", "¿Cuánto tiempo tarda?"],
+          ["¿Cuánto cuesta?", "How much does it cost?", "Asking price before accepting a service.", "¿Cuánto vale?"],
+          ["¿Puedo pagar con tarjeta?", "Can I pay by card?", "Before paying in taxis or shops.", "¿Aceptan tarjeta?"],
+          ["¿Me puede dejar aquí?", "Can you drop me here?", "Asking a driver to stop.", "Aquí está bien, gracias."],
+          ["Es mi primera vez aquí.", "It's my first time here.", "Small talk with officials or locals.", "Nunca he venido antes."]
+        ],
+        quiz: [
+          ["What does the officer want to know with '¿Cuál es el motivo de su visita?'", ["How long you're staying", "The purpose of your visit", "Where you're staying", "If you have a return ticket"], 1, "Motivo means reason or purpose."],
+          ["Which phrase says 'I'm going to stay ten days'?", ["Me hospedo diez días.", "Me voy a quedar diez días.", "Tengo diez días.", "Voy a visitar diez días."], 1, "'Me voy a quedar...' is the natural travel phrase."],
+          ["What is a natural way to ask how long a ride takes?", ["¿Cuánto cuesta?", "¿Cuánto tarda?", "¿Dónde está?", "¿Qué hora es?"], 1, "'¿Cuánto tarda?' is very useful in Latin America."],
+          ["If a taxi driver asks '¿A dónde va?', you answer with:", ["Your destination", "Your passport", "Your age", "Your hotel breakfast time"], 0, "They are asking where you are going."],
+          ["Which phrase is useful before paying in a taxi?", ["¿Aceptan tarjeta?", "¿Hay piscina?", "Estoy perdido.", "Vengo de turismo."], 0, "It asks if they accept card."]
+        ],
+        fillBlanks: [
+          ["Aquí tiene mi ____.", ["pasaporte"], "passport"],
+          ["Vengo de ____.", ["vacaciones"], "vacation"],
+          ["Me voy a ____ diez días.", ["quedar"], "stay"],
+          ["¿Cuánto ____ al centro?", ["tarda"], "takes"],
+          ["¿Puedo pagar con ____?", ["tarjeta"], "card"]
+        ],
+        roleplay: [
+          ["Oficial: ¿Cuál es el motivo de su visita?", "Vengo de vacaciones.", "Vengo de vacaciones y voy a visitar Bogotá por diez días.", "Short and clear is perfect at immigration."],
+          ["Taxista: Buenas tardes. ¿A dónde va?", "Voy al Hotel Central, por favor.", "Voy al Hotel Central, en el centro. ¿Cuánto tarda?", "Add the neighborhood if you know it."],
+          ["Conductor: Son cincuenta mil pesos.", "Perfecto. ¿Puedo pagar con tarjeta?", "Perfecto, gracias. ¿Acepta tarjeta o efectivo solamente?", "Ask about payment before the ride if possible."]
+        ],
+        homework: [
+          "Record a 45-second immigration answer: purpose, length of stay, accommodation, and first time in the country.",
+          "Write your real arrival plan in Spanish: airport, hotel address, transport, and estimated time.",
+          "Create a mini taxi script with price, payment, and destination questions."
+        ]
+      },
+      {
+        id: "hotel",
+        title: "Lodging & Hotel Problems",
+        icon: "🏨",
+        level: "A1-A2",
+        focus: "Reservations, amenities, check-in, polite requests, and problems.",
+        summary: "Check in smoothly, ask about amenities, and solve hotel problems politely.",
+        scenario: "You arrive at your hotel, confirm your reservation, ask about Wi-Fi and breakfast, then report a problem in your room.",
+        countryNotes: [
+          ["Mexico", "'La clave del Wi-Fi' and 'la contraseña' are both common."],
+          ["Colombia", "'¿Me regala más toallas?' can be a very polite request in service contexts."],
+          ["Argentina", "You may hear 'pileta' instead of 'piscina' for swimming pool."]
+        ],
+        dialogues: [
+          {
+            title: "Hotel check-in",
+            lines: [
+              ["Recepcionista", "Hola, buenas tardes. ¿Tiene una reserva?", "Hello, good afternoon. Do you have a reservation?", ["Tiene una reserva"]],
+              ["Viajero/a", "Sí, tengo una reserva a nombre de Sarah Miller.", "Yes, I have a reservation under the name Sarah Miller.", ["a nombre de"]],
+              ["Recepcionista", "Perfecto. ¿Hizo la reserva por Booking?", "Perfect. Did you book through Booking?", ["por Booking"]],
+              ["Viajero/a", "Sí, hice una reserva por dos noches.", "Yes, I made a reservation for two nights.", ["dos noches"]],
+              ["Viajero/a", "¿A qué hora es el desayuno?", "What time is breakfast?", ["desayuno"]],
+              ["Recepcionista", "El desayuno es de siete a diez. El check-out es a las once.", "Breakfast is from seven to ten. Check-out is at eleven.", ["check-out"]],
+              ["Viajero/a", "Gracias. ¿Cuál es la contraseña del Wi-Fi?", "Thank you. What is the Wi-Fi password?", ["contraseña del Wi-Fi"]]
+            ]
+          },
+          {
+            title: "Room problem",
+            lines: [
+              ["Viajero/a", "Buenas tardes. Estoy en la habitación 208.", "Good afternoon. I'm in room 208.", ["habitación 208"]],
+              ["Recepcionista", "Sí, dígame. ¿En qué le puedo ayudar?", "Yes, tell me. How can I help you?", ["le puedo ayudar"]],
+              ["Viajero/a", "Quisiera pedir más toallas, por favor. No hay ninguna.", "I would like to ask for more towels, please. There aren't any.", ["Quisiera", "No hay"]],
+              ["Viajero/a", "También la televisión no funciona.", "Also, the television doesn't work.", ["no funciona"]],
+              ["Recepcionista", "Disculpe. Enseguida enviamos a alguien.", "Sorry. We'll send someone right away.", ["Enseguida"]]
+            ]
+          }
+        ],
+        vocabulary: [
+          ["la reserva", "reservation", "Tengo una reserva a nombre de Ana López.", "I have a reservation under Ana López."],
+          ["a nombre de", "under the name of", "La reserva está a nombre de Sarah.", "The reservation is under Sarah."],
+          ["la habitación", "room", "Estoy en la habitación 208.", "I'm in room 208."],
+          ["el desayuno", "breakfast", "¿A qué hora es el desayuno?", "What time is breakfast?"],
+          ["la contraseña", "password", "¿Cuál es la contraseña del Wi-Fi?", "What is the Wi-Fi password?"],
+          ["el check-out", "check-out", "¿A qué hora es el check-out?", "What time is check-out?"],
+          ["las toallas", "towels", "Quisiera más toallas.", "I'd like more towels."],
+          ["hay", "there is / there are", "Hay una piscina en el hotel.", "There is a pool at the hotel."],
+          ["no funciona", "it doesn't work", "La televisión no funciona.", "The TV doesn't work."],
+          ["cambiar", "to change", "¿Puedo cambiar de habitación?", "Can I change rooms?"],
+          ["lavandería", "laundry", "¿Hay servicio de lavandería?", "Is there laundry service?"],
+          ["aire acondicionado", "air conditioning", "¿Tiene aire acondicionado?", "Does it have air conditioning?"]
+        ],
+        phraseBank: [
+          ["Tengo una reserva a nombre de...", "I have a reservation under the name...", "Checking into a hotel.", "La reserva está a nombre de..."],
+          ["Hice una reserva por Booking.", "I booked through Booking.", "Explaining where you booked.", "Reservé por Booking."],
+          ["¿A qué hora es el desayuno?", "What time is breakfast?", "Hotel breakfast questions.", "¿A qué hora sirven el desayuno?"],
+          ["¿Cuál es la contraseña del Wi-Fi?", "What's the Wi-Fi password?", "Internet access.", "¿Me da la clave del Wi-Fi?"],
+          ["¿A qué hora es el check-out?", "What time is check-out?", "Leaving the hotel.", "¿A qué hora tengo que salir?"],
+          ["¿La habitación tiene aire acondicionado?", "Does the room have AC?", "Confirming room features.", "¿Hay aire acondicionado?"],
+          ["Quisiera más toallas, por favor.", "I'd like more towels, please.", "Polite hotel request.", "¿Me puede traer más toallas?"],
+          ["No hay agua caliente.", "There is no hot water.", "Reporting a room problem.", "La ducha no tiene agua caliente."],
+          ["La televisión no funciona.", "The TV doesn't work.", "Reporting a broken item.", "El control no funciona."],
+          ["¿Puedo cambiar de habitación?", "Can I change rooms?", "When there is a problem.", "Quisiera cambiar de habitación."],
+          ["¿Podrían ayudarme?", "Could you help me?", "Polite request.", "¿Me podrían ayudar?"],
+          ["Muchas gracias por su ayuda.", "Thank you very much for your help.", "Closing politely.", "Gracias por ayudarme."]
+        ],
+        quiz: [
+          ["Which is a typical type of lodging in Latin America?", ["Apartamento turístico", "Hostal", "Hotel", "All of the above"], 3, "All are common options."],
+          ["Which phrase is most polite for changing rooms?", ["Dame otra habitación.", "Quisiera cambiar de habitación, por favor.", "Necesito otra habitación ya.", "Cambia mi cuarto."], 1, "'Quisiera...' softens the request."],
+          ["What does 'hay' mean in hotel contexts?", ["There is / there are", "To want", "To sleep", "To leave"], 0, "'Hay' expresses existence."],
+          ["Which service may cost extra?", ["Normal check-out", "A bed", "Laundry service", "The front door"], 2, "Laundry is often an extra service."],
+          ["How do you politely ask for more towels?", ["¡Toallas, ahora!", "Quisiera más toallas, por favor.", "Hay que traer toallas ya.", "Toalla para mí."], 1, "This is clear and polite."]
+        ],
+        fillBlanks: [
+          ["Tengo una reserva a ____ de Sarah Miller.", ["nombre"], "under the name"],
+          ["¿Cuál es la ____ del Wi-Fi?", ["contraseña", "contrasena", "clave"], "password"],
+          ["Quisiera más ____, por favor.", ["toallas"], "towels"],
+          ["La televisión no ____.", ["funciona"], "works"],
+          ["¿Puedo cambiar de ____?", ["habitación", "habitacion"], "room"]
+        ],
+        roleplay: [
+          ["Recepcionista: ¿Tiene una reserva?", "Sí, tengo una reserva a nombre de Emily Johnson.", "Sí, hice una reserva por Booking para dos noches a nombre de Emily Johnson.", "'A nombre de' is the key hotel phrase."],
+          ["Recepcionista: ¿Necesita algo más?", "Sí, quisiera más toallas, por favor.", "Sí, quisiera pedir más toallas porque no hay ninguna en la habitación.", "Use 'quisiera' for polite requests."],
+          ["Recepcionista: ¿Cuál es el problema?", "La televisión no funciona.", "Estoy en la habitación 208 y la televisión no funciona. ¿Podrían ayudarme?", "Add your room number to make it practical."]
+        ],
+        homework: [
+          "Record a hotel complaint using 'quisiera' and 'no funciona'.",
+          "Write a hotel amenities checklist: Wi-Fi, breakfast, air conditioning, hot water, laundry.",
+          "Create a 6-line check-in dialogue for your real name and travel dates."
+        ]
+      },
+      {
+        id: "restaurant",
+        title: "Restaurant & Food",
+        icon: "🍽️",
+        level: "A1-B1",
+        focus: "Ordering, recommendations, dietary needs, paying, compliments.",
+        summary: "Order food, ask for recommendations, mention allergies, and pay with confidence.",
+        scenario: "You go to a restaurant, ask for a table, order food, ask about ingredients, and pay.",
+        countryNotes: [
+          ["Peru", "Ask for local dishes: '¿Cuál es el plato típico?'"],
+          ["Mexico", "'Picante' matters. Say 'sin picante' or 'poquito picante'."],
+          ["Colombia", "'¿Me regala agua?' is a common polite request."]
+        ],
+        dialogues: [
+          {
+            title: "Ordering dinner",
+            lines: [
+              ["Mesero/a", "Buenas noches. ¿Mesa para cuántas personas?", "Good evening. Table for how many people?", ["Mesa para"]],
+              ["Viajero/a", "Una mesa para dos, por favor.", "A table for two, please.", ["mesa para dos"]],
+              ["Mesero/a", "Claro. Aquí está el menú.", "Of course. Here is the menu.", ["menú"]],
+              ["Viajero/a", "Gracias. ¿Qué me recomienda?", "Thanks. What do you recommend?", ["Qué me recomienda"]],
+              ["Mesero/a", "El pescado del día está muy bueno.", "The fish of the day is very good.", ["pescado del día"]],
+              ["Viajero/a", "Quisiera pedir el pescado y una limonada.", "I'd like to order the fish and a lemonade.", ["Quisiera pedir"]]
+            ]
+          },
+          {
+            title: "Dietary needs and bill",
+            lines: [
+              ["Viajero/a", "Una pregunta: ¿tiene opciones vegetarianas?", "One question: do you have vegetarian options?", ["opciones vegetarianas"]],
+              ["Mesero/a", "Sí, tenemos ensalada, sopa y arroz con verduras.", "Yes, we have salad, soup, and rice with vegetables.", ["verduras"]],
+              ["Viajero/a", "También soy alérgico/a al maní.", "I'm also allergic to peanuts.", ["soy alérgico/a"]],
+              ["Mesero/a", "Perfecto, aviso a la cocina.", "Perfect, I'll tell the kitchen.", ["cocina"]],
+              ["Viajero/a", "Estaba todo muy rico. ¿Me puede traer la cuenta?", "Everything was delicious. Can you bring the bill?", ["muy rico", "la cuenta"]]
+            ]
+          }
+        ],
+        vocabulary: [
+          ["la mesa", "table", "Una mesa para dos.", "A table for two."],
+          ["el menú", "menu", "Aquí está el menú.", "Here is the menu."],
+          ["recomendar", "to recommend", "¿Qué me recomienda?", "What do you recommend?"],
+          ["quisiera", "I would like", "Quisiera pedir una limonada.", "I'd like to order a lemonade."],
+          ["pedir", "to order / ask for", "Quisiera pedir el pescado.", "I'd like to order the fish."],
+          ["vegetariano/a", "vegetarian", "¿Tiene opciones vegetarianas?", "Do you have vegetarian options?"],
+          ["alérgico/a", "allergic", "Soy alérgica al maní.", "I'm allergic to peanuts."],
+          ["el maní", "peanut", "No puedo comer maní.", "I can't eat peanuts."],
+          ["la cuenta", "the bill", "La cuenta, por favor.", "The bill, please."],
+          ["la propina", "tip", "¿La propina está incluida?", "Is the tip included?"],
+          ["rico", "delicious", "Estaba muy rico.", "It was very delicious."],
+          ["sin picante", "not spicy", "Sin picante, por favor.", "Not spicy, please."]
+        ],
+        phraseBank: [
+          ["Una mesa para dos, por favor.", "A table for two, please.", "Arriving at a restaurant.", "Para dos, por favor."],
+          ["¿Qué me recomienda?", "What do you recommend?", "Asking for local suggestions.", "¿Cuál recomienda?"],
+          ["Quisiera pedir...", "I'd like to order...", "Polite ordering.", "Voy a pedir..."],
+          ["¿Tiene opciones vegetarianas?", "Do you have vegetarian options?", "Dietary preference.", "¿Hay algo vegetariano?"],
+          ["Soy alérgico/a a...", "I'm allergic to...", "Food safety.", "No puedo comer..."],
+          ["Sin picante, por favor.", "Not spicy, please.", "Spice preference.", "Poquito picante, por favor."],
+          ["¿Qué ingredientes tiene?", "What ingredients does it have?", "Checking a dish.", "¿Qué lleva?"],
+          ["¿Me puede traer agua?", "Can you bring me water?", "Asking for water.", "¿Me regala agua?"],
+          ["¿Me puede traer la cuenta?", "Can you bring the bill?", "Ready to pay.", "La cuenta, por favor."],
+          ["¿Puedo pagar con tarjeta?", "Can I pay by card?", "Payment.", "¿Aceptan tarjeta?"],
+          ["¿La propina está incluida?", "Is the tip included?", "Checking service charge.", "¿El servicio está incluido?"],
+          ["Estaba todo muy rico.", "Everything was delicious.", "Complimenting the meal.", "Todo estuvo delicioso."]
+        ],
+        quiz: [
+          ["What does '¿Qué me recomienda?' ask?", ["Where is the bathroom?", "What do you recommend?", "How much is the bill?", "Do you have Wi-Fi?"], 1, "It asks for a recommendation."],
+          ["Which phrase asks for vegetarian options?", ["¿Tiene opciones vegetarianas?", "¿Puedo pagar con tarjeta?", "¿Me trae la cuenta?", "¿A qué hora abre?"], 0, "Vegetarianas is the keyword."],
+          ["What is 'la cuenta'?", ["The tip", "The table", "The bill", "The menu"], 2, "La cuenta is the bill/check."],
+          ["How do you say 'I'm allergic to peanuts'?", ["Soy alérgico/a al maní.", "Tengo maní.", "Quiero maní.", "No hay maní."], 0, "Use 'soy alérgico/a a...'."],
+          ["Which phrase compliments the food?", ["Estaba todo muy rico.", "La cuenta, por favor.", "Sin picante.", "Mesa para dos."], 0, "Rico means tasty/delicious."]
+        ],
+        fillBlanks: [
+          ["Una mesa para ____, por favor.", ["dos"], "two"],
+          ["¿Qué me ____?", ["recomienda"], "recommend"],
+          ["Quisiera ____ el pescado.", ["pedir"], "order"],
+          ["Soy alérgico/a al ____.", ["maní", "mani"], "peanut"],
+          ["¿Me puede traer la ____?", ["cuenta"], "bill"]
+        ],
+        roleplay: [
+          ["Mesero/a: ¿Mesa para cuántas personas?", "Una mesa para dos, por favor.", "Buenas noches. Una mesa para dos, por favor.", "After the question, 'para dos' is enough."],
+          ["Mesero/a: ¿Ya sabe qué va a pedir?", "Quisiera pedir el pescado y una limonada.", "Sí, quisiera pedir el pescado del día y una limonada, por favor.", "'Quisiera' sounds polished and polite."],
+          ["Mesero/a: ¿Algo más?", "La cuenta, por favor.", "No, gracias. Estaba todo muy rico. ¿Me puede traer la cuenta?", "In many places you ask for the bill when ready."]
+        ],
+        homework: [
+          "Record yourself ordering a full meal: table, recommendation, dish, drink, and bill.",
+          "Write your dietary needs in Spanish, even if you have none.",
+          "Create a restaurant phrase sheet for your next trip."
+        ]
+      },
+      {
+        id: "health",
+        title: "Health & Emergencies",
+        icon: "🏥",
+        level: "A2-B1",
+        focus: "Body parts, symptoms, pharmacy, urgent help, medical forms.",
+        summary: "Explain what hurts, ask for medicine, and get help in stressful situations.",
+        scenario: "You feel sick while traveling and need to explain symptoms at a pharmacy or clinic.",
+        countryNotes: [
+          ["Latin America", "A 'farmacia' is often the first stop for minor symptoms."],
+          ["Mexico", "You may hear 'consultorio' near a pharmacy for a small clinic."],
+          ["Argentina", "'Remedio' is commonly used for medicine/remedy."]
+        ],
+        dialogues: [
+          {
+            title: "At the pharmacy",
+            lines: [
+              ["Farmacéutico/a", "Hola. ¿Qué le pasa?", "Hi. What's wrong?", ["Qué le pasa"]],
+              ["Viajero/a", "Me duele la cabeza y tengo fiebre.", "My head hurts and I have a fever.", ["Me duele", "tengo fiebre"]],
+              ["Farmacéutico/a", "¿Desde cuándo se siente así?", "Since when have you felt like this?", ["Desde cuándo"]],
+              ["Viajero/a", "Desde ayer por la noche.", "Since last night.", ["Desde ayer"]],
+              ["Farmacéutico/a", "Puede tomar este medicamento con agua.", "You can take this medicine with water.", ["medicamento"]],
+              ["Viajero/a", "Gracias. ¿Cada cuántas horas?", "Thanks. Every how many hours?", ["Cada cuántas horas"]]
+            ]
+          },
+          {
+            title: "Emergency help",
+            lines: [
+              ["Viajero/a", "Necesito ayuda, por favor. Es una emergencia.", "I need help, please. It's an emergency.", ["Necesito ayuda", "emergencia"]],
+              ["Persona local", "Claro. ¿Quiere que llame a una ambulancia?", "Of course. Do you want me to call an ambulance?", ["ambulancia"]],
+              ["Viajero/a", "Sí, por favor. Mi amigo se siente muy mal.", "Yes, please. My friend feels very bad.", ["se siente muy mal"]],
+              ["Persona local", "Tranquilo/a. Ya llamo.", "Stay calm. I'll call now.", ["Tranquilo"]]
+            ]
+          }
+        ],
+        vocabulary: [
+          ["me duele", "it hurts / my ... hurts", "Me duele el estómago.", "My stomach hurts."],
+          ["la cabeza", "head", "Me duele la cabeza.", "My head hurts."],
+          ["el estómago", "stomach", "Me duele el estómago.", "My stomach hurts."],
+          ["la fiebre", "fever", "Tengo fiebre.", "I have a fever."],
+          ["la tos", "cough", "Tengo tos.", "I have a cough."],
+          ["mareado/a", "dizzy", "Estoy mareado.", "I'm dizzy."],
+          ["el medicamento", "medicine", "Necesito un medicamento.", "I need medicine."],
+          ["la farmacia", "pharmacy", "¿Dónde hay una farmacia?", "Where is there a pharmacy?"],
+          ["la emergencia", "emergency", "Es una emergencia.", "It's an emergency."],
+          ["la ambulancia", "ambulance", "Llame a una ambulancia.", "Call an ambulance."],
+          ["seguro médico", "health insurance", "Tengo seguro médico.", "I have health insurance."],
+          ["alérgico/a", "allergic", "Soy alérgico a la penicilina.", "I'm allergic to penicillin."]
+        ],
+        phraseBank: [
+          ["Me duele la cabeza.", "My head hurts.", "Explaining pain.", "Tengo dolor de cabeza."],
+          ["Tengo fiebre.", "I have a fever.", "Describing symptoms.", "Estoy con fiebre."],
+          ["No me siento bien.", "I don't feel well.", "General sickness.", "Me siento mal."],
+          ["¿Dónde hay una farmacia?", "Where is there a pharmacy?", "Finding medicine.", "¿Hay una farmacia cerca?"],
+          ["Necesito un medicamento para...", "I need medicine for...", "At a pharmacy.", "Busco algo para..."],
+          ["¿Cada cuántas horas?", "Every how many hours?", "Medicine instructions.", "¿Con qué frecuencia?"],
+          ["Soy alérgico/a a...", "I'm allergic to...", "Medical safety.", "No puedo tomar..."],
+          ["Necesito ayuda.", "I need help.", "Emergency or problem.", "¿Me puede ayudar?"],
+          ["Es una emergencia.", "It's an emergency.", "Urgent situations.", "Es urgente."],
+          ["Llame a una ambulancia.", "Call an ambulance.", "Medical emergency.", "¿Puede llamar a una ambulancia?"],
+          ["Tengo seguro médico.", "I have health insurance.", "Clinic or hospital.", "Este es mi seguro médico."],
+          ["¿Hay un médico cerca?", "Is there a doctor nearby?", "Seeking care.", "¿Dónde hay una clínica?"]
+        ],
+        quiz: [
+          ["What does 'Me duele la cabeza' mean?", ["My head hurts", "I am hungry", "I need a taxi", "I lost my passport"], 0, "Me duele + body part explains pain."],
+          ["Where would you go for minor medicine?", ["Farmacia", "Aduana", "Recepción", "Banco"], 0, "Farmacia means pharmacy."],
+          ["Which phrase means 'I need help'?", ["Tengo fiebre", "Necesito ayuda", "La cuenta", "Quisiera pedir"], 1, "Necesito ayuda is essential."],
+          ["What should you mention before taking medicine?", ["Your favorite food", "Allergies", "Your hotel name only", "Your hobbies"], 1, "Allergies are important medical information."],
+          ["How do you ask how often to take medicine?", ["¿Cada cuántas horas?", "¿Cuánto cuesta?", "¿Dónde está?", "¿Qué hora es?"], 0, "This asks the dosage timing."]
+        ],
+        fillBlanks: [
+          ["Me ____ la cabeza.", ["duele"], "hurts"],
+          ["Tengo ____.", ["fiebre"], "fever"],
+          ["¿Dónde hay una ____?", ["farmacia"], "pharmacy"],
+          ["Necesito ____.", ["ayuda"], "help"],
+          ["Llame a una ____.", ["ambulancia"], "ambulance"]
+        ],
+        roleplay: [
+          ["Farmacéutico/a: ¿Qué le pasa?", "Me duele la cabeza y tengo fiebre.", "Desde ayer me duele la cabeza, tengo fiebre y no me siento bien.", "Start with symptoms and time."],
+          ["Doctor/a: ¿Es alérgico/a a algún medicamento?", "Sí, soy alérgico/a a la penicilina.", "Sí, soy alérgico/a a la penicilina. No puedo tomarla.", "Use 'soy alérgico/a a...'."],
+          ["Persona local: ¿Necesita ayuda?", "Sí, por favor. Es una emergencia.", "Sí, necesito ayuda. ¿Puede llamar a una ambulancia, por favor?", "In emergencies, be direct and clear."]
+        ],
+        homework: [
+          "Record a pharmacy dialogue with three symptoms and one medicine question.",
+          "Complete a mini medical card in Spanish: allergies, insurance, emergency contact.",
+          "Practice saying five body parts with 'me duele'."
+        ]
+      },
+      {
+        id: "excursions",
+        title: "Excursions & Culture",
+        icon: "🏞️",
+        level: "A2-B1",
+        focus: "Tours, weather, schedules, guides, future plans, itineraries.",
+        summary: "Reserve tours, ask about schedules and weather, and build a real travel itinerary.",
+        scenario: "You visit a tourism agency and book a day trip with a guide.",
+        countryNotes: [
+          ["Peru", "Ask about altitude: '¿Hay mucha altura?'"],
+          ["Colombia", "Weather can change quickly in mountain cities."],
+          ["Argentina", "For excursions, 'salida' often means departure time."]
+        ],
+        dialogues: [
+          {
+            title: "Tour agency",
+            lines: [
+              ["Agente", "Hola. ¿Qué tipo de tour busca?", "Hi. What kind of tour are you looking for?", ["tipo de tour"]],
+              ["Viajero/a", "Quiero reservar un tour de un día.", "I want to book a one-day tour.", ["reservar", "tour de un día"]],
+              ["Agente", "Tenemos una excursión al volcán mañana.", "We have an excursion to the volcano tomorrow.", ["excursión"]],
+              ["Viajero/a", "¿A qué hora empieza?", "What time does it start?", ["A qué hora"]],
+              ["Agente", "La salida es a las siete de la mañana.", "Departure is at seven in the morning.", ["salida"]],
+              ["Viajero/a", "Perfecto. ¿Incluye guía y transporte?", "Perfect. Does it include guide and transport?", ["Incluye"]]
+            ]
+          },
+          {
+            title: "With the guide",
+            lines: [
+              ["Guía", "Vamos a caminar por dos horas.", "We are going to walk for two hours.", ["Vamos a caminar"]],
+              ["Viajero/a", "¿Va a llover hoy?", "Is it going to rain today?", ["Va a llover"]],
+              ["Guía", "Puede llover por la tarde. Traigan una chaqueta.", "It may rain in the afternoon. Bring a jacket.", ["por la tarde"]],
+              ["Viajero/a", "Gracias. ¿Hay baños en el camino?", "Thanks. Are there bathrooms on the way?", ["en el camino"]],
+              ["Guía", "Sí, vamos a parar en una estación.", "Yes, we're going to stop at a station.", ["vamos a parar"]]
+            ]
+          }
+        ],
+        vocabulary: [
+          ["el tour", "tour", "Quiero reservar un tour.", "I want to book a tour."],
+          ["la excursión", "excursion", "La excursión sale temprano.", "The excursion leaves early."],
+          ["el guía / la guía", "guide", "¿Incluye guía?", "Does it include a guide?"],
+          ["el horario", "schedule", "¿Cuál es el horario?", "What is the schedule?"],
+          ["la salida", "departure", "La salida es a las siete.", "Departure is at seven."],
+          ["el clima", "weather", "¿Cómo está el clima?", "How is the weather?"],
+          ["llover", "to rain", "Va a llover.", "It's going to rain."],
+          ["la chaqueta", "jacket", "Traiga una chaqueta.", "Bring a jacket."],
+          ["incluido", "included", "¿Está incluido?", "Is it included?"],
+          ["el itinerario", "itinerary", "Este es el itinerario.", "This is the itinerary."],
+          ["el mirador", "viewpoint", "Vamos al mirador.", "We're going to the viewpoint."],
+          ["la entrada", "ticket / entrance fee", "¿La entrada está incluida?", "Is the entrance fee included?"]
+        ],
+        phraseBank: [
+          ["Quiero reservar un tour.", "I want to book a tour.", "At an agency or hotel desk.", "Me gustaría reservar una excursión."],
+          ["¿A qué hora empieza?", "What time does it start?", "Schedules.", "¿A qué hora comienza?"],
+          ["¿Cuál es el itinerario?", "What is the itinerary?", "Understanding the plan.", "¿Qué vamos a hacer?"],
+          ["¿Incluye transporte?", "Does it include transport?", "Tour details.", "¿El transporte está incluido?"],
+          ["¿Incluye guía?", "Does it include a guide?", "Booking tours.", "¿Hay guía?"],
+          ["¿La entrada está incluida?", "Is the entrance fee included?", "Avoiding surprise costs.", "¿Tengo que pagar la entrada aparte?"],
+          ["¿Qué debo llevar?", "What should I bring?", "Preparation.", "¿Qué necesito llevar?"],
+          ["¿Va a llover?", "Is it going to rain?", "Weather.", "¿Hay lluvia hoy?"],
+          ["¿Hay baños en el camino?", "Are there bathrooms on the way?", "Practical tour question.", "¿Hay baños durante el tour?"],
+          ["Voy a visitar...", "I'm going to visit...", "Future plans.", "Voy a conocer..."],
+          ["Vamos a regresar al hotel.", "We're going to return to the hotel.", "Understanding itinerary.", "Volvemos al hotel."],
+          ["¿Puede repetir, por favor?", "Can you repeat, please?", "When guide speaks fast.", "¿Lo puede repetir?"]
+        ],
+        quiz: [
+          ["What does 'la salida' mean in a tour context?", ["The bathroom", "Departure", "The ticket", "A jacket"], 1, "Salida often means departure."],
+          ["Which phrase asks if transport is included?", ["¿Incluye transporte?", "¿Dónde está el baño?", "¿Cuánto tarda?", "¿Qué hora es?"], 0, "Incluye means includes."],
+          ["How do you ask about weather?", ["¿Va a llover?", "¿Me duele?", "¿Hay lavandería?", "¿Tiene talla?"], 0, "Llover means to rain."],
+          ["What is 'el itinerario'?", ["The bill", "The room", "The trip plan", "The medicine"], 2, "Itinerary is the plan or schedule."],
+          ["Which phrase asks what to bring?", ["¿Qué debo llevar?", "¿Dónde me hospedo?", "¿Puedo cambiar?", "¿Qué me recomienda?"], 0, "Llevar means to bring/carry."]
+        ],
+        fillBlanks: [
+          ["Quiero ____ un tour.", ["reservar"], "book"],
+          ["¿A qué hora ____?", ["empieza", "comienza"], "starts"],
+          ["¿Incluye ____?", ["transporte"], "transport"],
+          ["¿Va a ____ hoy?", ["llover"], "rain"],
+          ["¿Qué debo ____?", ["llevar"], "bring"]
+        ],
+        roleplay: [
+          ["Agente: ¿Qué tipo de tour busca?", "Quiero reservar un tour de un día.", "Quiero reservar un tour de un día con guía y transporte.", "Name the type of tour and what you need."],
+          ["Guía: La salida es a las siete.", "Perfecto. ¿Qué debo llevar?", "Perfecto. ¿Qué debo llevar? ¿Una chaqueta, agua o comida?", "Ask practical preparation questions."],
+          ["Guía: Puede llover por la tarde.", "Gracias. Voy a traer una chaqueta.", "Gracias por avisar. Voy a traer una chaqueta y una botella de agua.", "Use 'voy a + infinitive' for plans."]
+        ],
+        homework: [
+          "Design a 3-day itinerary in Spanish using 'voy a'.",
+          "Record five questions you would ask before booking a tour.",
+          "Write a weather checklist for a mountain, beach, or city excursion."
+        ]
+      },
+      {
+        id: "shopping",
+        title: "Shopping & Markets",
+        icon: "🛍️",
+        level: "A1-B1",
+        focus: "Prices, clothing, colors, sizes, bargaining, payment.",
+        summary: "Ask prices, request colors and sizes, bargain politely, and pay.",
+        scenario: "You shop in a local market and clothing store, ask for prices, compare options, and buy souvenirs.",
+        countryNotes: [
+          ["Mexico", "'¿Cuánto cuesta?' is universal; '¿Cuánto es?' is also common."],
+          ["Colombia", "'¿Cuánto vale?' is very common for price."],
+          ["Argentina", "You may hear 'talle' for clothing size."]
+        ],
+        dialogues: [
+          {
+            title: "Street market",
+            lines: [
+              ["Vendedor/a", "Hola. ¿Qué busca?", "Hi. What are you looking for?", ["Qué busca"]],
+              ["Viajero/a", "Estoy buscando un regalo.", "I'm looking for a gift.", ["Estoy buscando"]],
+              ["Vendedor/a", "Tengo artesanías, camisetas y bolsos.", "I have crafts, T-shirts, and bags.", ["artesanías"]],
+              ["Viajero/a", "¿Cuánto cuesta este bolso?", "How much does this bag cost?", ["Cuánto cuesta"]],
+              ["Vendedor/a", "Cuesta treinta dólares.", "It costs thirty dollars.", ["Cuesta"]],
+              ["Viajero/a", "¿Me lo deja en veinticinco?", "Would you give it to me for twenty-five?", ["Me lo deja"]]
+            ]
+          },
+          {
+            title: "Clothing store",
+            lines: [
+              ["Vendedor/a", "¿Qué talla necesita?", "What size do you need?", ["talla"]],
+              ["Viajero/a", "Necesito una talla mediana.", "I need a medium size.", ["talla mediana"]],
+              ["Vendedor/a", "¿Le gusta este color?", "Do you like this color?", ["color"]],
+              ["Viajero/a", "Sí, pero ¿tiene otro color?", "Yes, but do you have another color?", ["otro color"]],
+              ["Vendedor/a", "Sí, también tenemos azul y verde.", "Yes, we also have blue and green.", ["azul", "verde"]],
+              ["Viajero/a", "Perfecto. ¿Puedo pagar con tarjeta?", "Perfect. Can I pay by card?", ["pagar con tarjeta"]]
+            ]
+          }
+        ],
+        vocabulary: [
+          ["el precio", "price", "¿Cuál es el precio?", "What is the price?"],
+          ["cuesta", "it costs", "Cuesta veinte pesos.", "It costs twenty pesos."],
+          ["vale", "it costs / is worth", "¿Cuánto vale?", "How much is it?"],
+          ["barato", "cheap", "Es muy barato.", "It's very cheap."],
+          ["caro", "expensive", "Es un poco caro.", "It's a little expensive."],
+          ["la talla", "size", "¿Qué talla necesita?", "What size do you need?"],
+          ["el color", "color", "¿Tiene otro color?", "Do you have another color?"],
+          ["el efectivo", "cash", "Pago en efectivo.", "I pay in cash."],
+          ["la tarjeta", "card", "Pago con tarjeta.", "I pay by card."],
+          ["el cambio", "change", "¿Tiene cambio?", "Do you have change?"],
+          ["regatear", "to bargain", "Se puede regatear en el mercado.", "You can bargain in the market."],
+          ["artesanía", "craft", "Compro una artesanía.", "I'm buying a craft."]
+        ],
+        phraseBank: [
+          ["¿Cuánto cuesta?", "How much does it cost?", "Price questions.", "¿Cuánto vale?"],
+          ["Estoy buscando un regalo.", "I'm looking for a gift.", "Starting a shopping conversation.", "Busco un recuerdo."],
+          ["¿Tiene otro color?", "Do you have another color?", "Clothing or products.", "¿Hay otro color?"],
+          ["¿Tiene otra talla?", "Do you have another size?", "Clothing and shoes.", "¿Hay talla mediana?"],
+          ["Es un poco caro.", "It's a little expensive.", "Soft bargaining.", "Está un poco caro."],
+          ["¿Me lo deja en...?", "Would you give it to me for...?", "Bargaining politely.", "¿Me puede hacer descuento?"],
+          ["¿Aceptan tarjeta?", "Do you accept card?", "Payment.", "¿Puedo pagar con tarjeta?"],
+          ["Pago en efectivo.", "I'll pay cash.", "Payment.", "Voy a pagar en efectivo."],
+          ["¿Tiene cambio?", "Do you have change?", "Cash payment.", "¿Tiene cambio de cien?"],
+          ["Solo estoy mirando.", "I'm just looking.", "Browsing.", "Solo miro, gracias."],
+          ["Me llevo este.", "I'll take this one.", "Choosing an item.", "Voy a llevar este."],
+          ["¿Es hecho a mano?", "Is it handmade?", "Souvenirs and crafts.", "¿Es artesanal?"]
+        ],
+        quiz: [
+          ["Which phrase asks the price?", ["¿Cuánto cuesta?", "¿Dónde está?", "¿Qué hora es?", "¿Me duele?"], 0, "Cuánto cuesta asks cost."],
+          ["What does 'talla' mean?", ["Color", "Size", "Receipt", "Market"], 1, "Talla is size."],
+          ["Which is a polite bargaining phrase?", ["¿Me lo deja en veinticinco?", "Dame menos.", "No quiero nada.", "Eso está hotel."], 0, "This is a natural bargaining pattern."],
+          ["What does 'solo estoy mirando' mean?", ["I'm just looking", "I'm lost", "I'm hungry", "I'm paying"], 0, "Use it when browsing."],
+          ["Which phrase means 'I'll take this one'?", ["Me llevo este.", "Hay este.", "Quiero salida.", "Estoy barato."], 0, "Me llevo este is common in shops."]
+        ],
+        fillBlanks: [
+          ["¿Cuánto ____ este bolso?", ["cuesta", "vale"], "costs"],
+          ["¿Tiene otra ____?", ["talla"], "size"],
+          ["¿Tiene otro ____?", ["color"], "color"],
+          ["Pago con ____.", ["tarjeta"], "card"],
+          ["Me ____ este.", ["llevo"], "take"]
+        ],
+        roleplay: [
+          ["Vendedor/a: ¿Qué busca?", "Estoy buscando un regalo.", "Estoy buscando un regalo pequeño para mi familia.", "Start with what you're looking for."],
+          ["Vendedor/a: Cuesta treinta dólares.", "Es un poco caro. ¿Me lo deja en veinticinco?", "Me gusta mucho, pero es un poco caro. ¿Me puede hacer descuento?", "Bargaining should stay warm and polite."],
+          ["Vendedor/a: ¿Qué talla necesita?", "Necesito una talla mediana.", "Necesito una talla mediana. ¿Tiene este color en mediano?", "Combine size and color questions."]
+        ],
+        homework: [
+          "Record a market bargaining dialogue with a starting price and a counteroffer.",
+          "Write a shopping list with colors, sizes, and payment method.",
+          "Practice numbers from 10 to 1000 using real prices."
+        ]
+      },
+      {
+        id: "people",
+        title: "Connecting with People",
+        icon: "💬",
+        level: "A1-B1",
+        focus: "Introductions, nationality, hobbies, family, everyday chats.",
+        summary: "Start friendly conversations, share about yourself, and connect with locals.",
+        scenario: "You meet people at a hostel, cafe, tour, or cultural event and want to keep the conversation going.",
+        countryNotes: [
+          ["Latin America", "Warm greetings matter. A smile and 'mucho gusto' go a long way."],
+          ["Argentina/Uruguay", "You may hear 'vos' instead of 'tú'."],
+          ["Colombia", "'¿De dónde eres?' and '¿Qué tal?' are common friendly starters."]
+        ],
+        dialogues: [
+          {
+            title: "Hostel introduction",
+            lines: [
+              ["Local", "Hola. ¿De dónde eres?", "Hi. Where are you from?", ["De dónde eres"]],
+              ["Viajero/a", "Soy de Estados Unidos. ¿Y tú?", "I'm from the United States. And you?", ["Soy de"]],
+              ["Local", "Soy de Colombia. ¿Es tu primera vez aquí?", "I'm from Colombia. Is it your first time here?", ["primera vez"]],
+              ["Viajero/a", "Sí, es mi primera vez. Me encanta la ciudad.", "Yes, it's my first time. I love the city.", ["Me encanta"]],
+              ["Local", "¡Qué bueno! ¿Qué planes tienes?", "Great! What plans do you have?", ["planes tienes"]],
+              ["Viajero/a", "Voy a visitar museos y probar comida local.", "I'm going to visit museums and try local food.", ["Voy a visitar"]]
+            ]
+          },
+          {
+            title: "Cafe chat",
+            lines: [
+              ["Local", "¿Qué te gusta hacer cuando viajas?", "What do you like to do when you travel?", ["te gusta hacer"]],
+              ["Viajero/a", "Me gusta caminar, sacar fotos y conocer gente.", "I like walking, taking photos, and meeting people.", ["Me gusta"]],
+              ["Local", "¿Viajas solo/a o con amigos?", "Are you traveling alone or with friends?", ["Viajas solo"]],
+              ["Viajero/a", "Viajo con una amiga. Estamos aprendiendo español.", "I'm traveling with a friend. We're learning Spanish.", ["aprendiendo español"]],
+              ["Local", "Hablas muy bien.", "You speak very well.", ["Hablas muy bien"]],
+              ["Viajero/a", "Gracias. Estoy practicando mucho.", "Thanks. I'm practicing a lot.", ["practicando"]]
+            ]
+          }
+        ],
+        vocabulary: [
+          ["soy de", "I'm from", "Soy de Canadá.", "I'm from Canada."],
+          ["nacionalidad", "nationality", "Mi nacionalidad es estadounidense.", "My nationality is American."],
+          ["me gusta", "I like", "Me gusta viajar.", "I like traveling."],
+          ["me encanta", "I love", "Me encanta la comida local.", "I love local food."],
+          ["conocer gente", "to meet people", "Quiero conocer gente.", "I want to meet people."],
+          ["familia", "family", "Mi familia vive en Texas.", "My family lives in Texas."],
+          ["hobbies", "hobbies", "Mis hobbies son caminar y leer.", "My hobbies are walking and reading."],
+          ["viajar", "to travel", "Me gusta viajar.", "I like to travel."],
+          ["solo/a", "alone", "Viajo solo.", "I travel alone."],
+          ["amigo/a", "friend", "Viajo con una amiga.", "I'm traveling with a friend."],
+          ["mucho gusto", "nice to meet you", "Mucho gusto.", "Nice to meet you."],
+          ["¿Y tú?", "And you?", "Soy de Chile. ¿Y tú?", "I'm from Chile. And you?"]
+        ],
+        phraseBank: [
+          ["¿De dónde eres?", "Where are you from?", "Meeting people.", "¿De dónde sos?"],
+          ["Soy de...", "I'm from...", "Introducing origin.", "Vengo de..."],
+          ["Mucho gusto.", "Nice to meet you.", "Polite introduction.", "Un gusto."],
+          ["Es mi primera vez aquí.", "It's my first time here.", "Travel small talk.", "Nunca había venido."],
+          ["Me encanta la ciudad.", "I love the city.", "Positive reaction.", "La ciudad me gusta mucho."],
+          ["¿Qué planes tienes?", "What plans do you have?", "Keeping a chat going.", "¿Qué vas a hacer?"],
+          ["Me gusta...", "I like...", "Hobbies and preferences.", "A mí me gusta..."],
+          ["Estoy aprendiendo español.", "I'm learning Spanish.", "Explaining your level.", "Estoy estudiando español."],
+          ["¿Puedes hablar más despacio?", "Can you speak more slowly?", "When someone speaks fast.", "¿Puede hablar más lento?"],
+          ["¿Cómo se dice...?", "How do you say...?", "Asking for vocabulary.", "¿Cómo digo...?"],
+          ["Gracias por tu paciencia.", "Thanks for your patience.", "When practicing with locals.", "Gracias por ayudarme."],
+          ["¿Nos sacamos una foto?", "Shall we take a photo?", "Friendly travel moment.", "¿Podemos sacar una foto?"]
+        ],
+        quiz: [
+          ["What does '¿De dónde eres?' mean?", ["Where are you from?", "Where are you going?", "What do you like?", "What's your name?"], 0, "It asks origin."],
+          ["Which phrase means 'I'm learning Spanish'?", ["Estoy aprendiendo español.", "Soy de español.", "Tengo español.", "Voy español."], 0, "Aprendiendo means learning."],
+          ["What does 'me encanta' express?", ["I hate", "I love", "I need", "I pay"], 1, "It is stronger than 'me gusta'."],
+          ["Which question keeps a conversation going?", ["¿Y tú?", "La cuenta.", "Mi pasaporte.", "No funciona."], 0, "And you? invites the other person."],
+          ["How do you ask someone to speak more slowly?", ["¿Puede hablar más lento?", "¿Puedo pagar?", "¿Tiene talla?", "¿Dónde hay hotel?"], 0, "Más lento/despacio both work."]
+        ],
+        fillBlanks: [
+          ["Soy ____ Estados Unidos.", ["de"], "from"],
+          ["Me ____ la ciudad.", ["encanta", "gusta"], "love/like"],
+          ["Estoy ____ español.", ["aprendiendo", "estudiando"], "learning"],
+          ["¿Puedes hablar más ____?", ["despacio", "lento"], "slowly"],
+          ["Mucho ____.", ["gusto"], "pleasure"]
+        ],
+        roleplay: [
+          ["Local: ¿De dónde eres?", "Soy de Estados Unidos. ¿Y tú?", "Soy de Estados Unidos y estoy viajando por Colombia. ¿Y tú?", "Return the question with '¿Y tú?'."],
+          ["Local: ¿Qué te gusta hacer cuando viajas?", "Me gusta caminar, sacar fotos y probar comida local.", "Cuando viajo, me gusta caminar, conocer gente y probar comida local.", "Use a list of three things for natural conversation."],
+          ["Local: Hablas muy bien.", "Gracias. Estoy practicando mucho.", "Muchas gracias. Estoy aprendiendo español y trato de practicar todos los días.", "Accept compliments warmly."]
+        ],
+        homework: [
+          "Record a 1-minute introduction: origin, travel plans, hobbies, and why you study Spanish.",
+          "Write five questions you can ask a local without sounding like an interview.",
+          "Create a short story about a person you met while traveling."
+        ]
+      },
+      {
+        id: "final",
+        title: "Final Project: My Real Trip",
+        icon: "🌍",
+        level: "A2-B1",
+        focus: "Full trip simulation, travel diary, checklist, self-assessment.",
+        summary: "Bring everything together in a guided real-trip simulation and final challenge.",
+        scenario: "You plan and simulate a real trip using Spanish from every module.",
+        countryNotes: [
+          ["Your Choice", "Choose one destination and adapt phrases to that country."],
+          ["Teacher Tip", "Students can submit this as written homework, audio, or video."],
+          ["Portfolio", "This becomes a travel Spanish passport students can keep."]
+        ],
+        dialogues: [
+          {
+            title: "Trip planning consultation",
+            lines: [
+              ["Coach", "¿A qué país vas a viajar?", "What country are you going to travel to?", ["vas a viajar"]],
+              ["Viajero/a", "Voy a viajar a Perú por dos semanas.", "I'm going to travel to Peru for two weeks.", ["Voy a viajar"]],
+              ["Coach", "¿Dónde te vas a hospedar?", "Where are you going to stay?", ["hospedar"]],
+              ["Viajero/a", "Me voy a hospedar en hoteles pequeños y hostales.", "I'm going to stay in small hotels and hostels.", ["hoteles", "hostales"]],
+              ["Coach", "¿Qué situaciones quieres practicar más?", "What situations do you want to practice most?", ["situaciones"]],
+              ["Viajero/a", "Quiero practicar restaurantes, taxis y excursiones.", "I want to practice restaurants, taxis, and excursions.", ["practicar"]]
+            ]
+          },
+          {
+            title: "Travel diary check-in",
+            lines: [
+              ["Coach", "¿Qué hiciste hoy?", "What did you do today?", ["hiciste"]],
+              ["Viajero/a", "Hoy visité un museo, comí ceviche y hablé con una guía.", "Today I visited a museum, ate ceviche, and spoke with a guide.", ["visité", "comí", "hablé"]],
+              ["Coach", "¿Qué frase usaste en español?", "What phrase did you use in Spanish?", ["frase usaste"]],
+              ["Viajero/a", "Usé '¿Qué me recomienda?' en un restaurante.", "I used 'What do you recommend?' in a restaurant.", ["Qué me recomienda"]]
+            ]
+          }
+        ],
+        vocabulary: [
+          ["el itinerario", "itinerary", "Mi itinerario tiene tres ciudades.", "My itinerary has three cities."],
+          ["el presupuesto", "budget", "Mi presupuesto es de mil dólares.", "My budget is one thousand dollars."],
+          ["el diario", "journal", "Escribo un diario de viaje.", "I write a travel journal."],
+          ["la meta", "goal", "Mi meta es hablar con locales.", "My goal is to speak with locals."],
+          ["la experiencia", "experience", "Fue una experiencia increíble.", "It was an amazing experience."],
+          ["practicar", "to practice", "Quiero practicar taxis.", "I want to practice taxis."],
+          ["repasar", "to review", "Voy a repasar las frases.", "I'm going to review the phrases."],
+          ["grabar", "to record", "Voy a grabar un audio.", "I'm going to record audio."],
+          ["me sentí", "I felt", "Me sentí más seguro.", "I felt more confident."],
+          ["logré", "I managed / achieved", "Logré pedir comida.", "I managed to order food."],
+          ["todavía necesito", "I still need", "Todavía necesito practicar.", "I still need to practice."],
+          ["mi viaje real", "my real trip", "Este es mi viaje real.", "This is my real trip."]
+        ],
+        phraseBank: [
+          ["Voy a viajar a...", "I'm going to travel to...", "Introducing your destination.", "Voy a ir a..."],
+          ["Me voy a hospedar en...", "I'm going to stay at...", "Planning lodging.", "Me quedo en..."],
+          ["Mi presupuesto es...", "My budget is...", "Planning costs.", "Tengo un presupuesto de..."],
+          ["Quiero practicar...", "I want to practice...", "Setting learning goals.", "Necesito practicar..."],
+          ["Hoy visité...", "Today I visited...", "Travel diary.", "Fui a..."],
+          ["Comí...", "I ate...", "Travel diary food entry.", "Probé..."],
+          ["Hablé con...", "I spoke with...", "Connection reflection.", "Conocí a..."],
+          ["Usé la frase...", "I used the phrase...", "Self-assessment.", "Pude decir..."],
+          ["Me sentí más seguro/a.", "I felt more confident.", "Reflection.", "Tuve más confianza."],
+          ["Todavía necesito practicar...", "I still need to practice...", "Next step.", "Quiero mejorar..."],
+          ["Mi reto fue...", "My challenge was...", "Reflection.", "Lo más difícil fue..."],
+          ["Mi logro fue...", "My win was...", "Celebrating progress.", "Logré..."]
+        ],
+        quiz: [
+          ["What is the final project mainly about?", ["Memorizing grammar only", "Simulating a real trip", "Deleting modules", "Only reading vocabulary"], 1, "It brings the trip together."],
+          ["Which phrase states a destination?", ["Voy a viajar a Perú.", "Tengo fiebre.", "La cuenta.", "No funciona."], 0, "Voy a viajar a... gives destination."],
+          ["What does 'me sentí más seguro/a' mean?", ["I felt more confident", "I paid by card", "I need towels", "I got lost"], 0, "Seguro/a here means confident."],
+          ["Which is a good travel diary phrase?", ["Hoy visité un museo.", "¿Me lo deja?", "Llame a una ambulancia.", "¿Tiene talla?"], 0, "It reports what you did."],
+          ["What should students submit?", ["A guided written/audio/video trip simulation", "Only a passport photo", "Nothing", "A grammar chart only"], 0, "The final project can be written, audio, or video."]
+        ],
+        fillBlanks: [
+          ["Voy a ____ a Perú.", ["viajar"], "travel"],
+          ["Mi ____ es hablar con locales.", ["meta"], "goal"],
+          ["Hoy ____ un museo.", ["visité", "visite"], "visited"],
+          ["Me sentí más ____.", ["seguro", "segura"], "confident"],
+          ["Todavía necesito ____ taxis.", ["practicar"], "practice"]
+        ],
+        roleplay: [
+          ["Coach: ¿A qué país vas a viajar?", "Voy a viajar a Perú.", "Voy a viajar a Perú por dos semanas y quiero visitar Lima y Cusco.", "Give destination plus length."],
+          ["Coach: ¿Qué quieres practicar?", "Quiero practicar restaurantes y taxis.", "Quiero practicar pedir comida, tomar taxis y reservar tours.", "Name practical situations."],
+          ["Coach: ¿Cuál fue tu logro?", "Logré hablar con una guía.", "Mi logro fue hablar con una guía y entender casi todo.", "Celebrate communication wins."]
+        ],
+        homework: [
+          "Create your final travel plan: destination, lodging, transport, food, tours, emergency plan.",
+          "Record a 2-minute 'Mi Viaje Real' presentation.",
+          "Complete a self-assessment: phrases I can use, situations I can handle, and what I still need to practice."
+        ]
+      }
+    ];
+
+    const state = {
+      view: "home",
+      moduleId: null,
+      activity: "dialogue",
+      showTranslations: false,
+      quizAnswers: {},
+      reviewIndex: 0,
+      recording: { recorder: null, chunks: [], url: null, recognition: null, transcript: "", target: "" },
+      audio: { key: null, element: null, utterance: null },
+      voices: []
+    };
+
+    function defaultProgress() {
+      return {
+        studentName: "",
+        startedModules: [],
+        completedModules: [],
+        quizScores: {},
+        activityLog: {},
+        xp: 0,
+        streakDay: "",
+        streak: 0,
+        reviews: {},
+        homework: {},
+        lead: { name: "", email: "", capturedAt: "", systemeCaptured: false },
+        finalAssessment: { answers: {}, lastScore: null, bestScore: null, completedAt: "" },
+        voiceSettings: { narrator: "", local: "", rate: 0.88 }
+      };
+    }
+
+    function getProgress() {
+      try { return { ...defaultProgress(), ...JSON.parse(localStorage.getItem(STORAGE_KEY)) }; }
+      catch { return defaultProgress(); }
+    }
+
+    function saveProgress(progress, rerender = true) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      if (rerender) render();
+    }
+
+    function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+    function touchActivity(key, xp = 5) {
+      const p = getProgress();
+      if (!p.activityLog[key]) {
+        p.activityLog[key] = { done: true, at: new Date().toISOString() };
+        p.xp += xp;
+        if (p.streakDay !== todayKey()) {
+          p.streak = p.streakDay ? p.streak + 1 : 1;
+          p.streakDay = todayKey();
+        }
+        saveProgress(p, false);
+      }
+    }
+
+    function normalize(text) {
+      return (text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[¿?¡!.,]/g, "").replace(/\s+/g, " ").trim();
+    }
+
+    function jsString(value) {
+      return `decodeURIComponent('${encodeURIComponent(String(value || ""))}')`;
+    }
+
+    function highlightText(text, highlights = []) {
+      let out = text;
+      highlights.forEach(h => out = out.replace(h, `<mark>${h}</mark>`));
+      return out;
+    }
+
+    function freeModules() {
+      return modules;
+    }
+
+    function coreModules() {
+      return modules.filter(m => CORE_MODULE_IDS.includes(m.id));
+    }
+
+    const GUIDED_ACTIVITIES = ["dialogue", "vocabulary", "quiz", "fill", "speak", "ai", "phrases", "variations", "homework"];
+    const ACTIVITY_LABELS = {
+      dialogue: "Dialogue",
+      vocabulary: "Useful Phrases",
+      quiz: "Quiz",
+      fill: "Quick Practice",
+      speak: "Speaking",
+      ai: "AI Coach",
+      phrases: "Phrase Bank",
+      variations: "Country Variations",
+      homework: "Travel Mission"
+    };
+
+    function nextStarterModuleId(moduleId) {
+      const index = FREE_MODULE_IDS.indexOf(moduleId);
+      return index >= 0 ? FREE_MODULE_IDS[index + 1] : null;
+    }
+
+    function moduleActivityDone(moduleId, activity) {
+      const p = getProgress();
+      return Object.keys(p.activityLog || {}).some(key => key.startsWith(`${moduleId}:${activity}`) || key.includes(`${moduleId}:${activity}`));
+    }
+
+    function guidedModuleDone(moduleId) {
+      return getModuleProgress(moduleId) >= 60 || GUIDED_ACTIVITIES.some(activity => moduleActivityDone(moduleId, activity));
+    }
+
+    function renderGuidedNextButton(moduleId, activity) {
+      const currentIndex = GUIDED_ACTIVITIES.indexOf(activity);
+      const nextActivity = GUIDED_ACTIVITIES[currentIndex + 1];
+      if (nextActivity) {
+        return `<div class="guided-next"><button class="btn btn-primary" onclick="openModule('${moduleId}', '${nextActivity}')">Next: ${ACTIVITY_LABELS[nextActivity]} →</button></div>`;
+      }
+      const nextModule = nextStarterModuleId(moduleId);
+      if (nextModule) {
+        const next = modules.find(m => m.id === nextModule);
+        return `<div class="guided-next"><button class="btn btn-primary" onclick="openModule('${nextModule}', 'dialogue')">Next Module: ${next.title} →</button></div>`;
+      }
+      return `<div class="guided-next"><button class="btn btn-primary" onclick="setView('assessment')">Take Final Quiz →</button></div>`;
+    }
+
+    function finalAssessmentQuestions() {
+      return coreModules().flatMap(module => module.quiz.map((q, index) => ({
+        moduleId: module.id,
+        moduleTitle: module.title,
+        question: q[0],
+        options: q[1],
+        correct: q[2],
+        explanation: q[3],
+        id: `${module.id}-${index}`
+      })));
+    }
+
+    function calculateFinalScore(answers) {
+      const questions = finalAssessmentQuestions();
+      const score = questions.reduce((sum, q, index) => sum + (Number(answers[index]) === q.correct ? 1 : 0), 0);
+      const percent = questions.length ? Math.round((score / questions.length) * 100) : 0;
+      return { score, percent, total: questions.length };
+    }
+
+    function hasResultAccess(progress = getProgress()) {
+      return true;
+    }
+
+    function syncResultAccessFromUrl() {
+      try {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get("reset") === "1") {
+          localStorage.removeItem(STORAGE_KEY);
+          sessionStorage.removeItem("realSpanishResultPending");
+          state.view = "home";
+          state.moduleId = null;
+          state.activity = "dialogue";
+          state.quizAnswers = {};
+          url.searchParams.delete("reset");
+          if (window.history?.replaceState) window.history.replaceState({}, "", url.toString());
+          return;
+        }
+        if (url.searchParams.get("showResult") !== "1") return;
+        const p = getProgress();
+        p.lead = { ...(p.lead || {}), systemeCaptured: true, capturedAt: p.lead?.capturedAt || new Date().toISOString() };
+        saveProgress(p, false);
+        state.view = "assessment";
+        url.searchParams.delete("showResult");
+        if (window.history?.replaceState) window.history.replaceState({}, "", url.toString());
+      } catch {}
+    }
+
+    function getVoiceSettings() {
+      return { ...defaultProgress().voiceSettings, ...(getProgress().voiceSettings || {}) };
+    }
+
+    function spanishVoices() {
+      return state.voices.filter(v => (v.lang || "").toLowerCase().startsWith("es"));
+    }
+
+    function preferredVoice(role = "narrator") {
+      const settings = getVoiceSettings();
+      const voices = spanishVoices();
+      const chosen = voices.find(v => v.voiceURI === settings[role]);
+      if (chosen) return chosen;
+      const femaleHints = ["female", "mujer", "monica", "mónica", "paulina", "luciana", "soledad", "marisol", "helena", "laura", "carmen", "google español"];
+      const preferred = voices.find(v => femaleHints.some(h => v.name.toLowerCase().includes(h)));
+      if (role === "local") {
+        const naturalSecondVoice = voices.find(v => femaleHints.some(h => v.name.toLowerCase().includes(h)) && v.voiceURI !== settings.narrator);
+        return naturalSecondVoice || preferred || voices[0] || null;
+      }
+      return preferred || voices[0] || null;
+    }
+
+    function voiceRoleForSpeaker(speaker) {
+      if (speaker.includes("Coach") || speaker.includes("Guía")) return "coach";
+      return speaker.includes("Viajero") ? "narrator" : "local";
+    }
+
+    function premiumVoiceForRole(role = "narrator") {
+      return PREMIUM_VOICES[role] || PREMIUM_VOICES.neutral;
+    }
+
+    function canUsePremiumAudio() {
+      return window.location.protocol !== "file:" && typeof fetch === "function";
+    }
+
+    function isAudioPlaying(key) {
+      return Boolean(key && state.audio.key === key);
+    }
+
+    function audioButtonLabel(key, listenLabel = "🔊 Listen") {
+      return isAudioPlaying(key) ? "⏸️ Pause" : listenLabel;
+    }
+
+    function audioButtonClass(key) {
+      return isAudioPlaying(key) ? "btn-audio-active" : "btn-secondary";
+    }
+
+    function stopAudio(rerender = true) {
+      if (state.audio.element) {
+        try {
+          state.audio.element.pause();
+          state.audio.element.currentTime = 0;
+        } catch {}
+      }
+      if ("speechSynthesis" in window) speechSynthesis.cancel();
+      state.audio = { key: null, element: null, utterance: null };
+      if (rerender) render();
+    }
+
+    function clearAudio(key) {
+      if (!key || state.audio.key === key) {
+        state.audio = { key: null, element: null, utterance: null };
+        render();
+      }
+    }
+
+    function speakWithBrowser(text, role = "narrator", key = "browser-audio", clearOnEnd = true) {
+      if (!("speechSynthesis" in window)) {
+        alert("Audio is not available in this browser.");
+        return Promise.resolve();
+      }
+      return new Promise(resolve => {
+        speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "es-419";
+        const settings = getVoiceSettings();
+        utterance.rate = settings.rate || 0.88;
+        const voice = preferredVoice(role);
+        if (voice) {
+          utterance.voice = voice;
+          utterance.lang = voice.lang || "es-419";
+        }
+        state.audio.utterance = utterance;
+        utterance.onend = () => {
+          if (clearOnEnd) clearAudio(key);
+          resolve();
+        };
+        utterance.onerror = () => {
+          if (clearOnEnd) clearAudio(key);
+          resolve();
+        };
+        speechSynthesis.speak(utterance);
+      });
+    }
+
+    async function playPremiumAudio(text, role = "narrator", key = "premium-audio", clearOnEnd = true) {
+      const response = await fetch("/.netlify/functions/tts-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          voice: premiumVoiceForRole(role),
+          text
+        })
+      });
+      if (!response.ok) throw new Error("Premium audio unavailable.");
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      state.audio.element = audio;
+      return new Promise((resolve, reject) => {
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          if (clearOnEnd) clearAudio(key);
+          resolve();
+        };
+        audio.onerror = () => {
+          URL.revokeObjectURL(url);
+          if (clearOnEnd) clearAudio(key);
+          reject(new Error("Audio playback failed."));
+        };
+        audio.play().catch(error => {
+          URL.revokeObjectURL(url);
+          if (clearOnEnd) clearAudio(key);
+          reject(error);
+        });
+      });
+    }
+
+    async function speak(text, role = "narrator") {
+      return toggleAudio(`audio:${normalize(text).slice(0, 48)}`, text, role);
+    }
+
+    async function toggleAudio(key, text, role = "narrator") {
+      if (isAudioPlaying(key)) {
+        stopAudio();
+        return;
+      }
+      stopAudio(false);
+      state.audio.key = key;
+      render();
+      if (canUsePremiumAudio()) {
+        try {
+          await playPremiumAudio(text, role, key, true);
+          return;
+        } catch (error) {
+          if (state.audio.key !== key) return;
+          await speakWithBrowser(text, role, key, true);
+          return;
+        }
+      }
+      await speakWithBrowser(text, role, key, true);
+    }
+
+    function speakPromise(text, role = "narrator", key = "dialogue") {
+      if (canUsePremiumAudio()) {
+        return playPremiumAudio(text, role, key, false).catch(() => speakWithBrowser(text, role, key, false));
+      }
+      return speakWithBrowser(text, role, key, false);
+    }
+
+    async function playDialogue(moduleId) {
+      const m = modules.find(x => x.id === moduleId);
+      const lines = m.dialogues.flatMap(d => d.lines);
+      const key = `dialogue:${moduleId}`;
+      if (isAudioPlaying(key)) {
+        stopAudio();
+        return;
+      }
+      stopAudio(false);
+      state.audio.key = key;
+      render();
+      for (const line of lines) {
+        if (state.audio.key !== key) return;
+        await speakPromise(line[1], voiceRoleForSpeaker(line[0]), key);
+        await new Promise(resolve => setTimeout(resolve, 170));
+      }
+      touchActivity(`${moduleId}:dialogue-audio`);
+      clearAudio(key);
+    }
+
+    function setView(view) {
+      state.view = view;
+      state.moduleId = null;
+      state.activity = "dialogue";
+      state.quizAnswers = {};
+      updateNav(view);
+      render();
+      scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openModule(id, activity = "dialogue") {
+      if (!isFreeModule(id)) {
+        state.view = "modules";
+        updateNav("modules");
+        renderModules();
+        setTimeout(showLockedModule, 0);
+        return;
+      }
+      const p = getProgress();
+      if (!p.startedModules.includes(id)) {
+        p.startedModules.push(id);
+        saveProgress(p, false);
+      }
+      state.view = "module";
+      state.moduleId = id;
+      state.activity = activity;
+      state.quizAnswers = {};
+      updateNav("modules");
+      render();
+      scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function updateNav(active) {
+      navButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.view === active));
+    }
+
+    function getModuleProgress(moduleId) {
+      const p = getProgress();
+      const keys = Object.keys(p.activityLog).filter(k => k.startsWith(moduleId + ":"));
+      return Math.min(100, Math.round((keys.length / 9) * 100));
+    }
+
+    function allPhrases() {
+      return modules.filter(isFreeModule).flatMap(m => m.phraseBank.map((p, index) => ({ id: `${m.id}-${index}`, moduleId: m.id, moduleTitle: m.title, spanish: p[0], english: p[1], use: p[2], variation: p[3] })));
+    }
+
+    function isFreeModule(moduleOrId) {
+      return true;
+    }
+
+    function goToCourse() {
+      if (COURSE_URL.includes("YOUR-SYSTEME")) {
+        alert("Add your Systeme.io landing page URL inside COURSE_URL in index.html.");
+        return;
+      }
+      window.location.href = COURSE_URL;
+    }
+
+    function resultReturnUrl() {
+      const url = new URL(window.location.href);
+      url.searchParams.set("showResult", "1");
+      url.hash = "";
+      return url.toString();
+    }
+
+    function goToResultCapture() {
+      if (!RESULT_CAPTURE_URL) {
+        document.querySelector("#local-result-form")?.classList.remove("hidden");
+        document.querySelector("#local-result-form input")?.focus();
+        return;
+      }
+      sessionStorage.setItem("realSpanishResultPending", "1");
+      window.location.href = RESULT_CAPTURE_URL;
+    }
+
+    function renderUnlockPanel(context = "full") {
+      const title = context === "result"
+        ? "Keep building real travel confidence."
+        : "Your complete simulator is unlocked.";
+      return `
+        <section class="unlock-panel">
+          <span class="eyebrow">✨ Complete Student Version</span>
+          <h2>${title}</h2>
+          <p>Continue practicing with dialogues, speaking prompts, review, missions, and downloadable phrase sheets across every travel situation.</p>
+          <div class="footer-actions">
+            <button class="btn btn-yellow" onclick="setView('modules')">Continue Practicing</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function showLockedPopup() {
+      document.querySelector("#locked-modal")?.remove();
+      const modal = document.createElement("div");
+      modal.id = "locked-modal";
+      modal.className = "modal-backdrop";
+      modal.innerHTML = `
+        <article class="modal-card">
+          <span class="badge orange">Course Module</span>
+          <h2>This module is available in your course.</h2>
+          <p>Open the modules page to continue practicing with the complete simulator.</p>
+          <div class="footer-actions">
+            <button class="btn btn-primary" onclick="document.querySelector('#locked-modal')?.remove(); setView('modules')">Open Modules</button>
+            <button class="btn btn-secondary" onclick="document.querySelector('#locked-modal')?.remove()">Close</button>
+          </div>
+        </article>
+      `;
+      modal.addEventListener("click", event => {
+        if (event.target === modal) modal.remove();
+      });
+      document.body.appendChild(modal);
+    }
+
+    function dueCards() {
+      const p = getProgress();
+      const now = Date.now();
+      return allPhrases().filter(card => !p.reviews[card.id] || p.reviews[card.id].due <= now);
+    }
+
+    function renderDashboard() {
+      const p = getProgress();
+      const best = p.finalAssessment?.bestScore ? `${p.finalAssessment.bestScore}%` : "—";
+      return `
+        <section class="dashboard">
+          <div class="stat"><span class="stat-icon">📚</span><strong>${p.startedModules.length}</strong><span>Modules started</span></div>
+          <div class="stat"><span class="stat-icon">🏆</span><strong>${best}</strong><span>Best final result</span></div>
+          <div class="stat"><span class="stat-icon">✅</span><strong>${Object.keys(p.activityLog).length}</strong><span>Activities done</span></div>
+          <div class="stat"><span class="stat-icon">🔥</span><strong>${p.streak}</strong><span>Day streak</span></div>
+        </section>
+      `;
+    }
+
+    function renderHome() {
+      const p = getProgress();
+      app.innerHTML = `
+        <section class="hero">
+          <div class="hero-inner">
+            <span class="eyebrow">🌎 Complete Student Simulator</span>
+            <h1>Practice <span class="accent">real Spanish</span> before your next trip</h1>
+            <p>Your full travel Spanish practice hub: dialogues, audio, speaking practice, missions, phrase banks, review, and progress for every module.</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="setView('modules')">Open Modules →</button>
+              <button class="btn btn-secondary" onclick="setView('review')">🔁 Review Phrases</button>
+            </div>
+          </div>
+        </section>
+        <div class="section-title">
+          <div>
+            <h2>Your Course Dashboard</h2>
+            <p>${p.studentName ? `Welcome back, ${p.studentName}.` : "Choose a module, practice the activities, and track your travel Spanish confidence."}</p>
+          </div>
+        </div>
+        ${renderDashboard()}
+        <div class="section-title">
+          <div>
+            <h2>All Modules</h2>
+            <p>Work through the full simulator in order, or jump into the travel situation you need most.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="downloadAllPhraseSheets()">Download Phrase Sheets</button>
+        </div>
+        ${renderModuleGrid(modules)}
+      `;
+    }
+
+    function renderFreebiePath() {
+      const p = getProgress();
+      const final = calculateFinalScore(p.finalAssessment?.answers || {});
+      const quizDone = final.total && Object.keys(p.finalAssessment?.answers || {}).length === final.total;
+      const airportDone = getModuleProgress("airport") > 0;
+      const hotelDone = getModuleProgress("hotel") > 0;
+      const path = [
+        {
+          number: 1,
+          title: "Start at the airport",
+          text: "Practice immigration, arrival questions, and getting transport from the airport.",
+          action: airportDone ? "Continue Airport Practice" : "Start Airport Practice",
+          click: "openModule('airport')",
+          done: getModuleProgress("airport") >= 60,
+          active: !airportDone
+        },
+        {
+          number: 2,
+          title: "Check into your hotel",
+          text: "Practice reservations, Wi-Fi, breakfast, check-out, and simple hotel problems.",
+          action: hotelDone ? "Continue Hotel Practice" : "Start Hotel Practice",
+          click: "openModule('hotel')",
+          done: getModuleProgress("hotel") >= 60,
+          active: airportDone && !hotelDone
+        },
+        {
+          number: 3,
+          title: "Take your final quiz",
+          text: "Use the quiz as your checkpoint after the practice activities.",
+          action: quizDone ? "See My Result" : "Take Final Quiz",
+          click: "setView('assessment')",
+          done: quizDone,
+          active: hotelDone && !quizDone
+        },
+        {
+          number: 4,
+          title: "Keep training for your trip",
+          text: "Use spaced repetition to review the phrases that matter most before your next trip.",
+          action: "Review Phrase Bank",
+          click: "setView('review')",
+          done: false,
+          active: quizDone
+        }
+      ];
+      return `
+        <div class="guided-note">Start with step 1. Each page has one clear next button, so you can move through the practice without wondering what to click.</div>
+        <section class="path-grid">
+          ${path.map(step => `<article class="path-card ${step.done ? "done" : ""} ${step.active ? "active" : ""}">
+            <span class="path-number">${step.number}</span>
+            <h3>${step.title}</h3>
+            <p class="translation">${step.text}</p>
+            <button class="btn ${step.number === 4 ? "btn-yellow" : step.active ? "btn-primary" : "btn-teal"}" onclick="${step.click}">${step.action}</button>
+          </article>`).join("")}
+        </section>
+      `;
+    }
+
+    function renderModules() {
+      app.innerHTML = `
+        <div class="section-title">
+          <div><h2>All Modules</h2><p>Every module is unlocked in the complete student version. Practice dialogues, phrases, speaking, quizzes, variations, and travel missions.</p></div>
+          <button class="btn btn-secondary" onclick="downloadAllPhraseSheets()">Download PDF Phrase Sheets</button>
+        </div>
+        ${renderModuleGrid(modules)}
+        <div class="footer-actions" style="justify-content:center;margin-top:34px">
+          <button class="btn btn-primary" onclick="setView('assessment')">Take Final Quiz →</button>
+          <button class="btn btn-secondary" onclick="setView('review')">Review Phrase Bank →</button>
+        </div>
+      `;
+    }
+
+    function renderLockedModulesPreview() {
+      return "";
+    }
+
+    function renderModuleGrid(list) {
+      return `<section class="module-grid">${list.map(m => `
+        <article class="module-card ${isFreeModule(m) ? "" : "locked"}" onclick="${isFreeModule(m) ? `openModule('${m.id}')` : "showLockedPopup()"}">
+          <div class="module-banner">${m.icon}</div>
+          <div class="module-content">
+            <span class="badge ${isFreeModule(m) ? "" : "orange"}">${isFreeModule(m) ? m.level : "Full Course"}</span>
+            <div><h3>${m.title}</h3><p>${m.summary}</p></div>
+            <div class="progress-wrap"><div class="progress-bar" style="width:${getModuleProgress(m.id)}%"></div></div>
+            <span class="badge ${getModuleProgress(m.id) >= 80 ? "orange" : ""}">${isFreeModule(m) ? `${getModuleProgress(m.id)}% complete` : "🔒 Unlock in course"}</span>
+          </div>
+        </article>
+      `).join("")}</section>`;
+    }
+
+    function showLockedModule() {
+      app.innerHTML = `
+        <button class="back-link" onclick="setView('modules')">← Back to Modules</button>
+        ${renderUnlockPanel()}
+      `;
+      showLockedPopup();
+      scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderModule() {
+      const m = modules.find(x => x.id === state.moduleId);
+      if (!m) return renderModules();
+      if (!isFreeModule(m)) return showLockedModule();
+      app.innerHTML = `
+        <section class="module-head">
+          <button class="back-link" onclick="setView('modules')">← Back to Modules</button>
+          <span class="module-icon-large">${m.icon}</span>
+          <h1>${m.title}</h1>
+          <div class="module-meta"><span class="badge">${m.level}</span><span>${m.focus}</span></div>
+        </section>
+        <nav class="tabs">
+          ${[
+            ["dialogue", "1. Dialogue"],
+            ["vocabulary", "2. Phrases"],
+            ["quiz", "3. Quiz"],
+            ["fill", "4. Practice"],
+            ["speak", "5. Speaking"],
+            ["ai", "AI Coach"],
+            ["phrases", "Phrase Bank"],
+            ["variations", "Variations"],
+            ["homework", "Missions"]
+          ].map(([id, label]) => `<button class="tab ${state.activity === id ? "active" : ""}" onclick="openModule('${m.id}', '${id}')">${label}</button>`).join("")}
+        </nav>
+        ${renderActivity(m)}
+      `;
+    }
+
+    function renderActivity(m) {
+      if (state.activity === "vocabulary") return renderVocabulary(m);
+      if (state.activity === "quiz") return renderQuiz(m);
+      if (state.activity === "fill") return renderFill(m);
+      if (state.activity === "speak") return renderSpeaking(m);
+      if (state.activity === "ai") return renderAiCoach(m);
+      if (state.activity === "phrases") return renderPhrases(m);
+      if (state.activity === "variations") return renderVariations(m);
+      if (state.activity === "homework") return renderModuleHomework(m);
+      return renderDialogue(m);
+    }
+
+    function speakerLabel(s) {
+      if (s.includes("Viajero")) return "YOU";
+      if (s.includes("Oficial")) return "IMMIGRATION OFFICER";
+      if (s.includes("Recepcionista")) return "RECEPTIONIST";
+      if (s.includes("Mesero")) return "SERVER";
+      return s.toUpperCase();
+    }
+
+    function speakerIcon(s) {
+      if (s.includes("Viajero")) return "💼";
+      if (s.includes("Oficial")) return "🛂";
+      if (s.includes("Recepcionista")) return "🏨";
+      if (s.includes("Mesero")) return "🍽️";
+      if (s.includes("Taxista")) return "🚕";
+      if (s.includes("Farm")) return "💊";
+      if (s.includes("Guía")) return "🧭";
+      return "💬";
+    }
+
+    function renderDialogue(m) {
+      const lines = m.dialogues.flatMap(d => d.lines.map(line => ({ title: d.title, line })));
+      return `
+        <div class="scenario-card">
+          <div class="label">📍 Scenario</div>
+          <p>${m.scenario}</p>
+          <p><strong>Listening style practice:</strong> play each line, repeat out loud, then hide/show the translation.</p>
+        </div>
+        <div class="row-actions">
+          <button class="btn btn-secondary" onclick="state.showTranslations = !state.showTranslations; render()">🌐 ${state.showTranslations ? "Hide Translation" : "Show Translation"}</button>
+          <button class="btn btn-primary ${audioButtonClass(`dialogue:${m.id}`)}" onclick="playDialogue('${m.id}')">${audioButtonLabel(`dialogue:${m.id}`, "▶️ Play Full Dialogue")}</button>
+        </div>
+        <div class="dialogue-list">
+          ${lines.map(({ line }, index) => `
+            <div class="dialogue-line">
+              <div class="speaker-icon">${speakerIcon(line[0])}</div>
+              <div>
+                <div class="speaker">${speakerLabel(line[0])}</div>
+                <div class="spanish-line">${highlightText(line[1], line[3])}</div>
+                <div class="translation ${state.showTranslations ? "" : "hidden"}">${line[2]}</div>
+              </div>
+              <button class="btn btn-small ${audioButtonClass(`${m.id}:line-${index}`)}" onclick="toggleAudio('${m.id}:line-${index}', ${jsString(line[1])}, '${voiceRoleForSpeaker(line[0])}'); touchActivity('${m.id}:line-${index}')">${audioButtonLabel(`${m.id}:line-${index}`, "🔊")}</button>
+            </div>
+          `).join("")}
+        </div>
+        <div class="feedback warning">💡 Yellow phrases are high-value chunks. Listen first, then repeat them out loud.</div>
+        ${renderGuidedNextButton(m.id, "dialogue")}
+      `;
+    }
+
+    function renderVocabulary(m) {
+      touchActivity(`${m.id}:vocabulary-view`, 3);
+      return `
+        <div class="activity-heading"><h2>📖 Key Vocabulary</h2></div>
+        <div class="grid-one">
+          ${m.vocabulary.map((v, i) => `
+            <article class="phrase-card">
+              <div class="vocab-word">${v[0]}</div>
+              <p><strong>${v[1]}</strong></p>
+              <div class="label">Example</div>
+              <p><em>${v[2]}</em><br><span class="translation">${v[3]}</span></p>
+              <button class="btn btn-small ${audioButtonClass(`${m.id}:vocab-${i}`)}" onclick="toggleAudio('${m.id}:vocab-${i}', ${jsString(`${v[0]}. ${v[2]}`)}, 'narrator')">${audioButtonLabel(`${m.id}:vocab-${i}`, "🔊 Listen")}</button>
+            </article>
+          `).join("")}
+        </div>
+        ${renderGuidedNextButton(m.id, "vocabulary")}
+      `;
+    }
+
+    function renderQuiz(m) {
+      const answered = Object.keys(state.quizAnswers).length;
+      const score = m.quiz.reduce((sum, q, i) => sum + (state.quizAnswers[i] === q[2] ? 1 : 0), 0);
+      return `
+        <div class="activity-heading"><h2>❓ Comprehension Quiz</h2></div>
+        <div class="card"><strong>Score</strong><span style="float:right;font-family:Georgia,serif;color:var(--teal);font-size:2rem">${score} / ${m.quiz.length}</span><div class="progress-wrap"><div class="progress-bar" style="width:${(answered / m.quiz.length) * 100}%"></div></div></div>
+        ${m.quiz.map((q, qi) => {
+          const selected = state.quizAnswers[qi];
+          return `<article class="question-card">
+            <div class="label">Question ${qi + 1} of ${m.quiz.length}</div>
+            <strong>${q[0]}</strong>
+            <div class="options">${q[1].map((o, oi) => `<button class="option ${selected === oi ? (oi === q[2] ? "correct" : "incorrect") : ""}" onclick="answerQuiz('${m.id}', ${qi}, ${oi})">${o}</button>`).join("")}</div>
+            ${selected !== undefined ? `<div class="feedback">${selected === q[2] ? "Good job." : "Almost."} ${q[3]}</div>` : ""}
+          </article>`;
+        }).join("")}
+        ${renderGuidedNextButton(m.id, "quiz")}
+      `;
+    }
+
+    function answerQuiz(moduleId, qIndex, selected) {
+      state.quizAnswers[qIndex] = selected;
+      const m = modules.find(x => x.id === moduleId);
+      if (Object.keys(state.quizAnswers).length === m.quiz.length) {
+        const score = m.quiz.reduce((sum, q, i) => sum + (state.quizAnswers[i] === q[2] ? 1 : 0), 0);
+        const percent = Math.round((score / m.quiz.length) * 100);
+        const p = getProgress();
+        p.quizScores[moduleId] = Math.max(p.quizScores[moduleId] || 0, percent);
+        if (percent >= 80 && !p.completedModules.includes(moduleId)) p.completedModules.push(moduleId);
+        saveProgress(p, false);
+        touchActivity(`${moduleId}:quiz`, 15);
+      }
+      render();
+    }
+
+    function renderAssessment() {
+      const p = getProgress();
+      const answers = p.finalAssessment?.answers || {};
+      const questions = finalAssessmentQuestions();
+      const answered = Object.keys(answers).length;
+      const final = calculateFinalScore(answers);
+      const complete = answered === questions.length;
+
+      if (complete && !hasResultAccess(p)) {
+        app.innerHTML = renderLeadGate(final);
+        return;
+      }
+
+      if (complete && hasResultAccess(p)) {
+        app.innerHTML = renderResults(final);
+        return;
+      }
+
+      app.innerHTML = `
+        <div class="section-title">
+          <div>
+            <h2>🎯 Final Travel Spanish Readiness Quiz</h2>
+            <p>Do this after practicing the course modules. Your result combines listening comprehension, phrase recognition, and practical travel Spanish across the full simulator.</p>
+          </div>
+        </div>
+        <div class="card">
+          <strong>Progress</strong>
+          <span style="float:right;font-family:Georgia,serif;color:var(--teal);font-size:2rem">${answered} / ${questions.length}</span>
+          <div class="progress-wrap"><div class="progress-bar" style="width:${(answered / questions.length) * 100}%"></div></div>
+        </div>
+        ${questions.map((q, qi) => {
+          const selected = answers[qi];
+          return `<article class="question-card">
+            <div class="label">${q.moduleTitle} · Question ${qi + 1} of ${questions.length}</div>
+            <strong>${q.question}</strong>
+            <div class="options">${q.options.map((option, oi) => `<button class="option ${Number(selected) === oi ? (oi === q.correct ? "correct" : "incorrect") : ""}" onclick="answerFinalQuestion(${qi}, ${oi})">${option}</button>`).join("")}</div>
+            ${selected !== undefined ? `<div class="feedback">${Number(selected) === q.correct ? "Good job. That travel phrase is clear." : "Almost. This is a useful moment to notice the natural phrase."} ${q.explanation}</div>` : ""}
+          </article>`;
+        }).join("")}
+        <div class="footer-actions" style="justify-content:center">
+          <button class="btn btn-secondary" onclick="resetFinalQuiz()">Start Quiz Again</button>
+        </div>
+      `;
+    }
+
+    function answerFinalQuestion(index, selected) {
+      const p = getProgress();
+      p.finalAssessment = { ...defaultProgress().finalAssessment, ...(p.finalAssessment || {}) };
+      p.finalAssessment.answers = { ...(p.finalAssessment.answers || {}), [index]: selected };
+      const final = calculateFinalScore(p.finalAssessment.answers);
+      if (Object.keys(p.finalAssessment.answers).length === final.total) {
+        p.finalAssessment.lastScore = final.percent;
+        p.finalAssessment.bestScore = Math.max(p.finalAssessment.bestScore || 0, final.percent);
+        p.finalAssessment.completedAt = new Date().toISOString();
+        if (!p.activityLog["complete:final-quiz"]) {
+          p.activityLog["complete:final-quiz"] = { done: true, at: new Date().toISOString() };
+          p.xp += 20;
+        }
+      }
+      saveProgress(p);
+    }
+
+    function resetFinalQuiz() {
+      const p = getProgress();
+      p.finalAssessment = { ...defaultProgress().finalAssessment, bestScore: p.finalAssessment?.bestScore || null };
+      saveProgress(p);
+    }
+
+    function renderLeadGate(final) {
+      const p = getProgress();
+      return `
+        <section class="lead-panel">
+          <span class="badge orange">Your result is ready</span>
+          <h1>See your Travel Spanish result</h1>
+          <p>Your quiz is complete. Add your details on the results page, then you'll come right back here to see your score and what to practice next.</p>
+          <div class="footer-actions">
+            <button class="btn btn-primary" onclick="goToResultCapture()">Show My Result</button>
+          </div>
+          ${!RESULT_CAPTURE_URL ? `<div class="feedback warning">Preview mode: use this form to test the result screen. Once your capture page is connected, this step will send students through your email form.</div>` : `<p class="email-note">After submitting your details, you'll come right back here to see your personalized result.</p>`}
+          <form id="local-result-form" class="${RESULT_CAPTURE_URL ? "hidden" : ""}" onsubmit="submitLeadAndShowResults(event)">
+            <input id="lead-name" name="name" placeholder="Your name" value="${escapeHtml(p.studentName || p.lead?.name || "")}" autocomplete="name" required>
+            <input id="lead-email" name="email" placeholder="Your email" type="email" value="${escapeHtml(p.lead?.email || "")}" autocomplete="email" required>
+            <button class="btn btn-primary" type="submit">Show My Result</button>
+          </form>
+        </section>
+      `;
+    }
+
+    async function submitLeadAndShowResults(event) {
+      event.preventDefault();
+      const name = document.querySelector("#lead-name").value.trim();
+      const email = document.querySelector("#lead-email").value.trim();
+      if (!name || !email) return;
+      const p = getProgress();
+      const final = calculateFinalScore(p.finalAssessment?.answers || {});
+      p.studentName = name;
+      p.lead = { name, email, capturedAt: new Date().toISOString() };
+      saveProgress(p, false);
+
+      const formData = new URLSearchParams({
+        "form-name": LEAD_FORM_NAME,
+        name,
+        email,
+        score: `${final.percent}% (${final.score}/${final.total})`,
+        modules: freeModules().map(m => m.title).join(", "),
+        completedAt: new Date().toISOString()
+      });
+
+      try {
+        await fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: formData.toString()
+        });
+      } catch {}
+
+      render();
+      scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function resultMessage(percent) {
+      if (percent >= 85) return "You are ready to handle the basics with confidence. Keep practicing speaking speed and natural responses.";
+      if (percent >= 65) return "You have a solid travel foundation. A little more practice with real-life questions will make you much faster.";
+      return "You are building the right base. Focus on the high-value phrases first and repeat the dialogues out loud.";
+    }
+
+    function renderResults(final) {
+      const p = getProgress();
+      const moduleRows = freeModules().map(m => `<div class="detail-row">
+        <strong>${m.icon} ${m.title}</strong>
+        <span class="translation">${getModuleProgress(m.id)}% practiced</span>
+        <span class="translation">${m.level}</span>
+        <span class="status-dot ${getModuleProgress(m.id) > 0 ? "active" : ""}"></span>
+      </div>`).join("");
+      return `
+        <section class="result-panel">
+          <span class="badge">Your Result</span>
+          <h1>${p.studentName || "Your"} Travel Spanish Readiness Result</h1>
+          <div class="result-score">${final.percent}%</div>
+          <p><strong>${final.score} out of ${final.total} correct.</strong> ${resultMessage(final.percent)}</p>
+          <div class="grid-two" style="margin-top:22px">
+            <article class="card">
+              <div class="label">What you practiced</div>
+              <p>You practiced real travel comprehension across the complete simulator: arrival, lodging, food, health, excursions, shopping, and local conversations.</p>
+            </article>
+            <article class="card next-step-card">
+              <div class="label">Recommended Next Step</div>
+              <p>Review your weakest modules, repeat the speaking prompts, and complete one travel mission before your next class or practice session.</p>
+              <button class="btn btn-yellow" onclick="setView('review')">Review Phrase Bank</button>
+            </article>
+          </div>
+        </section>
+        <section class="detail-panel">
+          <h2>Your Practice Breakdown</h2>
+          ${moduleRows}
+        </section>
+        <div class="footer-actions" style="justify-content:center">
+          <button class="btn btn-secondary" onclick="resetFinalQuiz()">Retake Final Quiz</button>
+          <button class="btn btn-secondary" onclick="downloadAllPhraseSheets()">Download Phrase Sheets</button>
+        </div>
+      `;
+    }
+
+    function renderFill(m) {
+      return `
+        <div class="activity-heading"><h2>✏️ Fill in the Blanks</h2></div>
+        <div class="info-strip">Complete the sentences with the correct Spanish word or phrase. Accents are welcome but not required.</div>
+        ${m.fillBlanks.map((item, i) => `<article class="question-card">
+          <strong>${item[0].replace("____", `<input id="fill-${i}" placeholder="${item[2]}" autocomplete="off">`)}</strong>
+          <div class="footer-actions"><button class="btn btn-teal" onclick="checkFill('${m.id}', ${i})">Check Answer</button></div>
+          <div id="fill-result-${i}" class="feedback hidden"></div>
+        </article>`).join("")}
+        ${renderGuidedNextButton(m.id, "fill")}
+      `;
+    }
+
+    function checkFill(moduleId, i) {
+      const m = modules.find(x => x.id === moduleId);
+      const item = m.fillBlanks[i];
+      const value = normalize(document.querySelector(`#fill-${i}`).value);
+      const ok = item[1].map(normalize).includes(value);
+      const box = document.querySelector(`#fill-result-${i}`);
+      box.innerHTML = ok ? "Great. That answer works." : `Almost. A natural answer is <strong>${item[1][0]}</strong>.`;
+      box.classList.remove("hidden");
+      touchActivity(`${moduleId}:fill-${i}`, 5);
+    }
+
+    function renderSpeaking(m) {
+      return `
+        <div class="activity-heading"><h2>🎙️ Pronunciation & Voice Practice</h2></div>
+        <div class="feedback">Listen to the model, record your version, then play it back. Focus on being clear and confident, not perfect. Short answers are completely okay in real travel situations.</div>
+        ${m.roleplay.map((r, i) => `<article class="question-card">
+          <div class="label">Prompt ${i + 1}</div>
+          <p><strong>${r[0]}</strong></p>
+          <p class="translation">Model: ${r[1]}</p>
+          <div class="row-actions">
+            <button class="btn ${audioButtonClass(`${m.id}:speaking-${i}`)}" onclick="toggleAudio('${m.id}:speaking-${i}', ${jsString(r[1])}, 'narrator')">${audioButtonLabel(`${m.id}:speaking-${i}`, "🔊 Listen to Model")}</button>
+            <button class="btn btn-primary" onclick="startRecording(${i}, '${r[1].replaceAll("'", "\\'")}')">⏺️ Start Recording + Feedback</button>
+            <button class="btn btn-secondary" onclick="stopRecording(${i})">⏹️ Stop</button>
+          </div>
+          <div id="recording-${i}" class="record-panel hidden"></div>
+          <div id="pronunciation-${i}" class="feedback hidden"></div>
+          <div class="feedback warning">Tip: ${r[3]}</div>
+        </article>`).join("")}
+        ${renderGuidedNextButton(m.id, "speak")}
+      `;
+    }
+
+    async function startRecording(index, targetText = "") {
+      if (!navigator.mediaDevices || !window.MediaRecorder) {
+        alert("Voice recording is not available in this browser.");
+        return;
+      }
+      state.recording.target = targetText;
+      state.recording.transcript = "";
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      state.recording.chunks = [];
+      state.recording.recorder = new MediaRecorder(stream);
+      state.recording.recorder.ondataavailable = event => state.recording.chunks.push(event.data);
+      state.recording.recorder.onstop = () => {
+        const blob = new Blob(state.recording.chunks, { type: "audio/webm" });
+        const url = URL.createObjectURL(blob);
+        const panel = document.querySelector(`#recording-${index}`);
+        panel.innerHTML = `<div><strong>Your recording</strong><audio controls src="${url}"></audio></div><span class="badge orange">Saved for this session</span>`;
+        panel.classList.remove("hidden");
+        requestAiPronunciationFeedback(index, blob);
+        touchActivity(`${state.moduleId}:recording-${index}`, 8);
+      };
+      state.recording.recorder.start();
+      startSpeechRecognition(index);
+      const panel = document.querySelector(`#recording-${index}`);
+      panel.textContent = "Recording... speak naturally.";
+      panel.classList.remove("hidden");
+    }
+
+    function startSpeechRecognition(index) {
+      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const box = document.querySelector(`#pronunciation-${index}`);
+      if (!Recognition) {
+        if (box) {
+          box.innerHTML = "Your recording will be saved for playback. Automatic pronunciation feedback is not available in this browser. Chrome usually supports this best.";
+          box.classList.remove("hidden");
+        }
+        return;
+      }
+      const recognition = new Recognition();
+      recognition.lang = "es-ES";
+      recognition.interimResults = true;
+      recognition.continuous = false;
+      recognition.onresult = event => {
+        state.recording.transcript = Array.from(event.results).map(result => result[0].transcript).join(" ");
+      };
+      recognition.onerror = () => {
+        if (box) {
+          box.innerHTML = "I could record your voice, but I could not transcribe it this time. Try again in a quieter room or use Chrome for better speech recognition.";
+          box.classList.remove("hidden");
+        }
+      };
+      state.recording.recognition = recognition;
+      try { recognition.start(); }
+      catch {
+        state.recording.recognition = null;
+      }
+    }
+
+    function stopRecording(index) {
+      if (state.recording.recorder && state.recording.recorder.state !== "inactive") {
+        state.recording.recorder.stop();
+        state.recording.recorder.stream.getTracks().forEach(track => track.stop());
+      }
+      if (state.recording.recognition) {
+        try { state.recording.recognition.stop(); } catch {}
+      }
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(String(reader.result).split(",")[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function requestAiPronunciationFeedback(index, audioBlob) {
+      const box = document.querySelector(`#pronunciation-${index}`);
+      if (!box) return;
+      const isLocalFile = window.location.protocol === "file:";
+      if (isLocalFile) {
+        renderPronunciationFeedback(index);
+        return;
+      }
+      box.innerHTML = "<strong>AI pronunciation coach:</strong> checking your recording...";
+      box.classList.remove("hidden");
+      try {
+        const audioBase64 = await blobToBase64(audioBlob);
+        const moduleTitle = modules.find(m => m.id === state.moduleId)?.title || "";
+        const response = await fetch("/.netlify/functions/pronunciation-feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            audioBase64,
+            mimeType: audioBlob.type || "audio/webm",
+            targetText: state.recording.target,
+            browserTranscript: state.recording.transcript,
+            moduleTitle
+          })
+        });
+        if (!response.ok) throw new Error("AI feedback is not available yet.");
+        const data = await response.json();
+        renderAiPronunciationFeedback(index, data);
+      } catch (error) {
+        renderPronunciationFeedback(index);
+      }
+    }
+
+    function scorePronunciation(target, transcript) {
+      const targetWords = normalize(target).split(" ").filter(w => w.length > 1);
+      const spokenWords = normalize(transcript).split(" ").filter(w => w.length > 1);
+      const matched = targetWords.filter(word => spokenWords.includes(word));
+      const missing = [...new Set(targetWords.filter(word => !spokenWords.includes(word)))].slice(0, 7);
+      const score = targetWords.length ? Math.round((matched.length / targetWords.length) * 100) : 0;
+      return { score, matched, missing };
+    }
+
+    function renderPronunciationFeedback(index) {
+      const box = document.querySelector(`#pronunciation-${index}`);
+      if (!box) return;
+      const target = state.recording.target || "";
+      const transcript = state.recording.transcript || "";
+      if (!transcript.trim()) {
+        box.innerHTML = `<strong>Pronunciation note:</strong> Your audio is saved above. I could not hear enough Spanish to transcribe it automatically. Try speaking a little closer to the microphone, slower, and in a quiet room.`;
+        box.classList.remove("hidden");
+        return;
+      }
+      const result = scorePronunciation(target, transcript);
+      const message = result.score >= 80
+        ? "Great clarity. That would likely be understood."
+        : result.score >= 55
+          ? "Good start. A few key words need more clarity."
+          : "Keep going. Try listening once, then recording again more slowly.";
+      box.innerHTML = `
+        <div class="pronunciation-result">
+          <span class="pronunciation-score">${result.score}%</span>
+          <div>
+            <strong>${message}</strong>
+            <p><strong>I heard:</strong> ${transcript}</p>
+            <p><strong>Model:</strong> ${target}</p>
+            ${result.missing.length ? `<p><strong>Practice these words:</strong> ${result.missing.join(", ")}</p>` : `<p><strong>Nice:</strong> the key words came through clearly.</p>`}
+            <p class="translation">Try it again after listening once more. Clear rhythm and confidence matter more than sounding perfect.</p>
+          </div>
+        </div>
+      `;
+      box.classList.remove("hidden");
+    }
+
+    function renderAiPronunciationFeedback(index, data) {
+      const box = document.querySelector(`#pronunciation-${index}`);
+      if (!box) return;
+      const tips = Array.isArray(data.tips) ? data.tips : [];
+      const words = Array.isArray(data.practiceWords) ? data.practiceWords : [];
+      box.innerHTML = `
+        <div class="pronunciation-result">
+          <span class="pronunciation-score">${data.score || 0}%</span>
+          <div>
+            <strong>${data.encouragement || "Nice work. Keep practicing."}</strong>
+            <p><strong>AI heard:</strong> ${data.transcript || "No clear transcript."}</p>
+            <p><strong>Target:</strong> ${data.targetText || state.recording.target}</p>
+            ${data.correction ? `<p><strong>More natural:</strong> ${data.correction}</p>` : ""}
+            ${words.length ? `<p><strong>Practice words:</strong> ${words.join(", ")}</p>` : ""}
+            ${tips.length ? `<ul>${tips.map(tip => `<li>${tip}</li>`).join("")}</ul>` : ""}
+            <p class="translation">AI feedback focuses on clarity, missing words, and travel communication confidence.</p>
+          </div>
+        </div>
+      `;
+      box.classList.remove("hidden");
+    }
+
+    function renderAiCoach(m) {
+      return `
+        <div class="activity-heading"><h2>✨ AI Feedback Coach</h2></div>
+        <div class="feedback">Write what you would say in Spanish. The coach gives practical feedback on clarity, tone, and a more natural travel phrase.</div>
+        ${m.roleplay.map((r, i) => `<article class="question-card">
+          <div class="label">Real-life prompt</div>
+          <p><strong>${r[0]}</strong></p>
+          <textarea id="ai-${i}" placeholder="Write what you would say in Spanish..."></textarea>
+          <div class="footer-actions"><button class="btn btn-primary" onclick="coachAnswer('${m.id}', ${i})">Get AI Feedback</button></div>
+          <div id="ai-feedback-${i}" class="feedback hidden"></div>
+        </article>`).join("")}
+        ${renderGuidedNextButton(m.id, "ai")}
+      `;
+    }
+
+    async function coachAnswer(moduleId, i) {
+      const m = modules.find(x => x.id === moduleId);
+      const prompt = m.roleplay[i];
+      const rawAnswer = document.querySelector(`#ai-${i}`).value.trim();
+      const box = document.querySelector(`#ai-feedback-${i}`);
+      if (!rawAnswer) {
+        box.innerHTML = "Write one short Spanish answer first.";
+        box.classList.remove("hidden");
+        return;
+      }
+      box.innerHTML = "Checking your answer...";
+      box.classList.remove("hidden");
+      if (window.location.protocol !== "file:") {
+        try {
+          const response = await fetch("/.netlify/functions/ai-coach", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              moduleTitle: m.title,
+              prompt: prompt[0],
+              answer: rawAnswer,
+              modelAnswer: prompt[1],
+              completeAnswer: prompt[2],
+              tip: prompt[3]
+            })
+          });
+          if (!response.ok) throw new Error("AI coach unavailable.");
+          const data = await response.json();
+          box.innerHTML = `
+            <strong>${data.summary || "Good effort."}</strong>
+            <p><strong>Natural:</strong> ${data.naturalAnswer || prompt[1]}</p>
+            <p><strong>More complete:</strong> ${data.completeAnswer || prompt[2]}</p>
+            ${Array.isArray(data.tips) ? `<ul>${data.tips.map(t => `<li>${t}</li>`).join("")}</ul>` : ""}
+          `;
+          touchActivity(`${moduleId}:ai-${i}`, 8);
+          return;
+        } catch (error) {}
+      }
+      const answer = normalize(rawAnswer);
+      const modelWords = normalize(prompt[1]).split(" ").filter(w => w.length > 3);
+      const hits = modelWords.filter(w => answer.includes(w)).length;
+      let msg = "Good effort. ";
+      if (hits >= 2) msg += "That answer is understandable and uses useful travel language.";
+      else msg += "This may be understandable, but a more natural phrase would help.";
+      box.innerHTML = `${msg}<br><strong>Natural:</strong> ${prompt[1]}<br><strong>More complete:</strong> ${prompt[2]}<br><span class="translation">${prompt[3]}</span>`;
+      touchActivity(`${moduleId}:ai-${i}`, 8);
+    }
+
+    function renderPhrases(m) {
+      touchActivity(`${m.id}:phrases-view`, 3);
+      return `
+        <div class="activity-heading"><h2>📌 Essential Phrase Bank</h2></div>
+        <div class="row-actions"><button class="btn btn-secondary" onclick="downloadPhraseSheet('${m.id}')">Download PDF Phrase Sheet</button></div>
+        <div class="grid-one">
+          ${m.phraseBank.map((p, i) => `<article class="phrase-card ${i === 0 ? "featured" : ""}">
+            <div class="spanish">${p[0]}</div>
+            <p><strong>${p[1]}</strong></p>
+            <div class="label">When to use</div>
+            <p>${p[2]}</p>
+            <p class="translation">🔁 Also: <em>${p[3]}</em></p>
+            <button class="btn btn-small ${audioButtonClass(`${m.id}:phrase-${i}`)}" onclick="toggleAudio('${m.id}:phrase-${i}', ${jsString(p[0])}, 'narrator')">${audioButtonLabel(`${m.id}:phrase-${i}`, "🔊 Listen")}</button>
+          </article>`).join("")}
+        </div>
+        ${renderGuidedNextButton(m.id, "phrases")}
+      `;
+    }
+
+    function renderVariations(m) {
+      return `
+        <div class="activity-heading"><h2>🌎 Country-Specific Spanish Variations</h2></div>
+        <div class="country-grid">
+          ${m.countryNotes.map(n => `<article class="card"><span class="badge">${n[0]}</span><p>${n[1]}</p></article>`).join("")}
+        </div>
+        <div class="feedback warning">Variation notes are practical travel hints, not strict rules. Spanish changes by country, city, and even person.</div>
+        ${renderGuidedNextButton(m.id, "variations")}
+      `;
+    }
+
+    function renderModuleHomework(m) {
+      const p = getProgress();
+      return `
+        <div class="activity-heading"><h2>🧭 Travel Missions</h2></div>
+        ${m.homework.map((h, i) => {
+          const key = `${m.id}-${i}`;
+          return `<article class="question-card">
+            <div class="label">Mission ${i + 1}</div>
+            <p><strong>${h}</strong></p>
+            <textarea id="hw-${i}" placeholder="Write your travel script, plan, or real-life answer here...">${p.homework[key] || ""}</textarea>
+            <div class="footer-actions"><button class="btn btn-primary" onclick="saveHomework('${m.id}', ${i})">Complete Mission</button></div>
+            <div id="mission-result-${i}" class="mission-result hidden"></div>
+          </article>`;
+        }).join("")}
+        ${renderGuidedNextButton(m.id, "homework")}
+      `;
+    }
+
+    function saveHomework(moduleId, i) {
+      const p = getProgress();
+      p.homework[`${moduleId}-${i}`] = document.querySelector(`#hw-${i}`).value;
+      saveProgress(p, false);
+      touchActivity(`${moduleId}:homework-${i}`, 12);
+      const m = modules.find(x => x.id === moduleId);
+      const box = document.querySelector(`#mission-result-${i}`);
+      box.innerHTML = `<strong>Mission complete.</strong> You now have a practical ${m.title.toLowerCase()} script ready to use or practice out loud.`;
+      box.classList.remove("hidden");
+    }
+
+    function renderReview() {
+      const due = dueCards();
+      const card = due[state.reviewIndex % Math.max(due.length, 1)];
+      app.innerHTML = `
+        <div class="section-title"><div><h2>🔁 Spaced Repetition Review</h2><p>These buttons schedule when the phrase comes back. They do not grade the student.</p></div></div>
+        ${card ? `<article class="card review-card">
+          <span class="badge">${card.moduleTitle}</span>
+          <div class="big-spanish">${card.spanish}</div>
+          <p>${card.english}</p>
+          <p class="translation">${card.use}</p>
+          <div class="row-actions" style="justify-content:center"><button class="btn ${audioButtonClass(`review:${card.id}:audio`)}" onclick="toggleAudio('review:${card.id}:audio', ${jsString(card.spanish)}, 'narrator')">${audioButtonLabel(`review:${card.id}:audio`, "🔊 Listen")}</button></div>
+          <div class="review-actions">
+            <button class="review-choice" onclick="gradeReview('${card.id}', 1)">
+              <strong>Review Soon</strong>
+              <span>I forgot it. Show it again tomorrow.</span>
+            </button>
+            <button class="review-choice" onclick="gradeReview('${card.id}', 3)">
+              <strong>I Know It</strong>
+              <span>I got it. Bring it back in 3 days.</span>
+            </button>
+            <button class="review-choice" onclick="gradeReview('${card.id}', 7)">
+              <strong>Mastered</strong>
+              <span>That felt easy. Review next week.</span>
+            </button>
+          </div>
+        </article>` : `<article class="card review-card"><div class="big-spanish">All clear!</div><p>No cards are due right now.</p></article>`}
+      `;
+    }
+
+    function gradeReview(id, days) {
+      const p = getProgress();
+      p.reviews[id] = { due: Date.now() + days * 86400000, interval: days, reviewedAt: new Date().toISOString() };
+      saveProgress(p, false);
+      state.reviewIndex += 1;
+      touchActivity(`review:${id}`, 4);
+      renderReview();
+    }
+
+    function renderHomework() {
+      const p = getProgress();
+      app.innerHTML = `
+        <div class="section-title"><div><h2>🧭 Travel Missions</h2><p>Turn practice into something useful for a real trip: scripts, plans, and confidence checks.</p></div></div>
+        <div class="grid-two">
+          ${modules.map(m => `<article class="card">
+            <span class="badge ${isFreeModule(m) ? "" : "orange"}">${isFreeModule(m) ? m.level : "Full Course"}</span><h3>${m.icon} ${m.title}</h3>
+            <p>${m.homework.length} missions</p>
+            <p class="translation">${m.homework.map((_, i) => p.homework[`${m.id}-${i}`]).filter(Boolean).length}/${m.homework.length} saved</p>
+            <button class="btn btn-primary" onclick="${isFreeModule(m) ? `openModule('${m.id}', 'homework')` : "showLockedModule()"}">${isFreeModule(m) ? "Open Missions" : "Unlock Missions"}</button>
+          </article>`).join("")}
+        </div>
+      `;
+    }
+
+    function renderDaily() {
+      const phrase = allPhrases()[new Date().getDate() % allPhrases().length];
+      app.innerHTML = `
+        <section class="challenge-panel">
+          <span class="eyebrow">⚡ Daily Travel Challenge</span>
+          <h1>Today's Spanish Practice</h1>
+          <div class="grid-one">
+            <article class="card phrase-card">
+              <div class="label">📣 Phrase of the Day</div>
+              <div class="spanish">${phrase.spanish}</div>
+              <p>${phrase.english}</p>
+              <p>💡 ${phrase.use}</p>
+              <button class="btn ${isAudioPlaying("daily:phrase") ? "btn-audio-active" : "btn-yellow"}" onclick="toggleAudio('daily:phrase', ${jsString(phrase.spanish)}, 'narrator')">${audioButtonLabel("daily:phrase", "🔊 Listen")}</button>
+            </article>
+            <article class="card">
+              <div class="label">✍️ Today's Challenge</div>
+              <p>Write a sentence using: <strong>${phrase.spanish}</strong></p>
+              <div class="field-row"><input id="daily-answer" placeholder="Write your answer in Spanish..."><button class="btn btn-yellow" onclick="dailyCheck('${phrase.spanish.replaceAll("'", "\\'")}')">Check</button></div>
+              <div id="daily-feedback" class="feedback hidden"></div>
+            </article>
+          </div>
+        </section>
+      `;
+    }
+
+    function dailyCheck(model) {
+      const answer = document.querySelector("#daily-answer").value;
+      const box = document.querySelector("#daily-feedback");
+      box.innerHTML = answer.trim() ? `Nice. You practiced today's phrase.<br><strong>Model phrase:</strong> ${model}` : "Write one short sentence first.";
+      box.classList.remove("hidden");
+      touchActivity("daily:challenge", 6);
+    }
+
+    function renderProgress() {
+      const p = getProgress();
+      app.innerHTML = `
+        <div class="section-title"><div><h2>📊 Your Progress</h2><p>Local analytics for all course modules on this device.</p></div></div>
+        <article class="card">
+          <div class="field-row"><input id="student-name" placeholder="Student name" value="${p.studentName || ""}"><button class="btn btn-primary" onclick="saveStudentName()">Save Name</button></div>
+        </article>
+        ${renderDashboard()}
+        <section class="detail-panel">
+          <h2>Module Analytics</h2>
+          ${modules.filter(isFreeModule).map(m => `<div class="detail-row">
+            <strong>${m.icon} ${m.title}</strong>
+            <span class="translation">${getModuleProgress(m.id)}% complete</span>
+            <span class="translation">${m.level}</span>
+            <span class="status-dot ${getModuleProgress(m.id) > 0 ? "active" : ""}"></span>
+          </div>`).join("")}
+          <div class="detail-row">
+            <strong>🎯 Final Readiness Quiz</strong>
+            <span class="translation">${p.finalAssessment?.lastScore ? p.finalAssessment.lastScore + "% latest" : "Not completed"}</span>
+            <span class="translation">Best: ${p.finalAssessment?.bestScore ? p.finalAssessment.bestScore + "%" : "—"}</span>
+            <span class="status-dot ${p.finalAssessment?.lastScore ? "active" : ""}"></span>
+          </div>
+        </section>
+        <div class="footer-actions"><button class="btn btn-secondary" onclick="exportProgress()">Download Progress Report</button><button class="btn btn-secondary" onclick="resetProgress()">Reset Local Progress</button></div>
+      `;
+    }
+
+    function saveStudentName() {
+      const p = getProgress();
+      p.studentName = document.querySelector("#student-name").value.trim();
+      saveProgress(p);
+    }
+
+    function resetProgress() {
+      if (!confirm("Reset all saved progress on this device?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      render();
+    }
+
+    function downloadText(filename, text) {
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(value) {
+      return String(value || "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
+    }
+
+    function phraseSheetHtml(moduleId) {
+      const selected = moduleId ? modules.filter(m => m.id === moduleId && isFreeModule(m)) : modules.filter(isFreeModule);
+      const title = moduleId ? `${selected[0].title} Phrase Sheet` : "Travel Spanish Phrase Sheets";
+      const sections = selected.map(m => `
+        <section class="sheet-section">
+          <div class="section-kicker">${escapeHtml(m.level)} · ${escapeHtml(m.focus)}</div>
+          <h2>${m.icon} ${escapeHtml(m.title)}</h2>
+          <p class="scenario">${escapeHtml(m.scenario)}</p>
+          <div class="phrase-grid">
+            ${m.phraseBank.map(p => `
+              <article class="sheet-card">
+                <h3>${escapeHtml(p[0])}</h3>
+                <p class="meaning">${escapeHtml(p[1])}</p>
+                <div class="mini-label">When to use</div>
+                <p>${escapeHtml(p[2])}</p>
+                <div class="variation">Also: ${escapeHtml(p[3])}</div>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      `).join("");
+      return `<!doctype html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>${escapeHtml(title)}</title>
+          <style>
+            :root { --orange:#f26b21; --teal:#279391; --cream:#f7f0e9; --ink:#25252a; --muted:#7f8190; --border:#e2d7ca; --yellow:#ffd777; }
+            * { box-sizing:border-box; }
+            html, body { margin:0; min-height:0; background:var(--cream); color:var(--ink); font-family: Inter, Avenir, system-ui, sans-serif; line-height:1.35; }
+            .sheet { max-width:980px; margin:0 auto; padding:20px; }
+            .sheet-hero { color:white; background:linear-gradient(135deg,#16333b,#279391); border-radius:18px; padding:18px 24px; margin:0 0 12px; position:relative; overflow:hidden; page-break-after:avoid; break-after:avoid; page-break-inside:avoid; break-inside:avoid; min-height:0 !important; height:auto !important; }
+            .sheet-hero:after { content:""; position:absolute; width:150px; height:150px; border-radius:50%; right:-45px; top:-70px; background:rgba(255,255,255,.08); }
+            .brand { color:var(--yellow); text-transform:uppercase; letter-spacing:.12em; font-weight:900; font-size:.74rem; }
+            h1 { font-family: Georgia, serif; font-size:32px; line-height:1.05; margin:8px 0 6px; }
+            h2 { font-family: Georgia, serif; font-size:25px; margin:0 0 6px; }
+            h3 { color:var(--orange); font-size:18px; margin:0 0 4px; }
+            .scenario, .meaning { color:var(--muted); font-size:14px; }
+            .sheet-section { background:#fffefa; border:1px solid var(--border); border-radius:18px; padding:18px; margin:12px 0; page-break-inside:auto; break-inside:auto; }
+            .section-kicker, .mini-label { color:var(--teal); text-transform:uppercase; font-weight:900; letter-spacing:.1em; font-size:.75rem; }
+            .phrase-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
+            .sheet-card { border:1px solid var(--border); border-radius:14px; padding:12px; background:white; page-break-inside:avoid; break-inside:avoid; }
+            .variation { margin-top:8px; color:var(--teal); font-style:italic; }
+            .footer { text-align:center; color:var(--muted); padding:12px; font-size:12px; }
+            @media print {
+              html, body { background:white; width:auto; height:auto; }
+              .sheet { max-width:none; padding:0; }
+              .sheet-hero { border-radius:0; padding:10px 14px; margin:0 0 6px; min-height:0 !important; height:auto !important; max-height:95px !important; }
+              .sheet-hero:after { display:none; }
+              .sheet-hero h1 { font-size:22px; margin:3px 0; }
+              .sheet-hero p { margin:0; font-size:10px; }
+              .brand { font-size:9px; }
+              .sheet-section { border-radius:0; padding:10px 0; margin:6px 0; border-left:0; border-right:0; border-top:1px solid var(--border); border-bottom:0; }
+              .sheet-section:first-of-type { page-break-before:avoid; break-before:avoid; }
+              .phrase-grid { grid-template-columns:repeat(2,1fr); }
+              .sheet-card { padding:8px; border-radius:10px; }
+              h2 { font-size:19px; }
+              h3 { font-size:14px; }
+              p { margin:.22em 0; font-size:11px; }
+              .section-kicker, .mini-label { font-size:9px; letter-spacing:.08em; }
+              .scenario, .meaning, .variation { font-size:10px; }
+              @page { margin:.35in; size:auto; }
+            }
+            @media (max-width:720px) {
+              .sheet { padding:18px; }
+              h1 { font-size:34px; }
+              .phrase-grid { grid-template-columns:1fr; }
+            }
+          </style>
+        </head>
+        <body>
+          <main class="sheet">
+            <header class="sheet-hero">
+              <div class="brand">✈️ Real Spanish Travel Simulator</div>
+              <h1>${escapeHtml(title)}</h1>
+              <p>Ready-to-use travel phrases for real-life Spanish practice.</p>
+            </header>
+            ${sections}
+            <div class="footer">Real Spanish Travel Simulator · Practice real-life Spanish before your next trip</div>
+          </main>
+        </body>
+        </html>`;
+    }
+
+    function printPhraseSheet(moduleId) {
+      const sheetWindow = window.open("", "_blank");
+      if (!sheetWindow) {
+        alert("Please allow pop-ups so the phrase sheet can open for printing or saving as PDF.");
+        return;
+      }
+      sheetWindow.document.write(phraseSheetHtml(moduleId));
+      sheetWindow.document.close();
+      sheetWindow.focus();
+      setTimeout(() => sheetWindow.print(), 350);
+    }
+
+    function downloadPhraseSheet(moduleId) {
+      printPhraseSheet(moduleId);
+      touchActivity(`${moduleId}:download`, 5);
+    }
+
+    function downloadAllPhraseSheets() {
+      printPhraseSheet();
+    }
+
+    function exportProgress() {
+      const p = getProgress();
+      const report = `Real Spanish Travel Simulator Progress\nStudent: ${p.studentName || "Unnamed"}\nXP: ${p.xp}\nStreak: ${p.streak}\nFinal result: ${p.finalAssessment?.lastScore ? p.finalAssessment.lastScore + "%" : "Not completed"}\n\n${modules.map(m => `${m.title}: ${getModuleProgress(m.id)}% complete`).join("\n")}`;
+      downloadText("real-spanish-progress-report.txt", report);
+    }
+
+    function render() {
+      if (state.view === "home") renderHome();
+      if (state.view === "modules") renderModules();
+      if (state.view === "module") renderModule();
+      if (state.view === "assessment") renderAssessment();
+      if (state.view === "review") renderReview();
+      if (state.view === "homework") renderHomework();
+      if (state.view === "daily") renderDaily();
+      if (state.view === "progress") renderProgress();
+    }
+
+    if ("speechSynthesis" in window) {
+      state.voices = speechSynthesis.getVoices();
+      speechSynthesis.onvoiceschanged = () => {
+        state.voices = speechSynthesis.getVoices();
+      };
+    }
+
+    navButtons.forEach(btn => btn.addEventListener("click", () => setView(btn.dataset.view)));
+    syncResultAccessFromUrl();
+    render();
+  </script>
+</body>
+</html>
