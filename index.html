@@ -954,18 +954,14 @@
         </div>
         <div class="nav-links">
           <button class="nav-link active" data-view="home">🏠 Home</button>
-          <button class="nav-link" data-view="modules">📚 Modules</button>
-          <button class="nav-link" data-view="assessment">🎯 Final Quiz</button>
-          <button class="nav-link" data-view="review">🔁 Review</button>
-          <button class="nav-link" data-view="homework">🧭 Missions</button>
-          <button class="nav-link" data-view="daily">⚡ Daily</button>
-          <button class="nav-link" data-view="progress">📊 Progress</button>
+          <button class="nav-link" data-view="modules">🧭 Start Here</button>
+          <button class="nav-link" data-view="assessment">🎯 Travel Check</button>
         </div>
       </nav>
     </header>
 
     <main id="app" aria-live="polite"></main>
-    <form name="student-results" data-netlify="true" hidden>
+    <form name="freebie-results" data-netlify="true" hidden>
       <input type="text" name="name">
       <input type="email" name="email">
       <input type="text" name="score">
@@ -979,15 +975,14 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "realSpanishTravelCompleteCourse";
-    const FREE_MODULE_IDS = ["airport", "hotel", "restaurant", "health", "excursions", "shopping", "people", "final"];
-    const CORE_MODULE_IDS = ["airport", "hotel", "restaurant", "health", "excursions", "shopping", "people"];
+    const STORAGE_KEY = "realSpanishTravelFullCourse";
+    const FREE_MODULE_IDS = ["airport", "hotel"];
     const COURSE_URL = "https://theonlinespanishteacher.systeme.io/realspanish-to-travel";
-    const RESULT_CAPTURE_URL = "";
-    const LEAD_FORM_NAME = "student-results";
+    const RESULT_CAPTURE_URL = "https://theonlinespanishteacher.systeme.io/test-results";
+    const LEAD_FORM_NAME = "freebie-results";
     const PREMIUM_VOICES = {
       narrator: "cedar",
-      local: "alloy",
+      local: "marin",
       coach: "fable",
       neutral: "alloy"
     };
@@ -1783,24 +1778,16 @@
     }
 
     function freeModules() {
-      return modules;
+      return modules.filter(isFreeModule);
     }
 
-    function coreModules() {
-      return modules.filter(m => CORE_MODULE_IDS.includes(m.id));
-    }
-
-    const GUIDED_ACTIVITIES = ["dialogue", "vocabulary", "quiz", "fill", "speak", "ai", "phrases", "variations", "homework"];
+    const GUIDED_ACTIVITIES = ["dialogue", "vocabulary", "fill", "speak", "phrases"];
     const ACTIVITY_LABELS = {
       dialogue: "Dialogue",
       vocabulary: "Useful Phrases",
-      quiz: "Quiz",
       fill: "Quick Practice",
       speak: "Speaking",
-      ai: "AI Coach",
-      phrases: "Phrase Bank",
-      variations: "Country Variations",
-      homework: "Travel Mission"
+      phrases: "Phrase Bank"
     };
 
     function nextStarterModuleId(moduleId) {
@@ -1828,11 +1815,11 @@
         const next = modules.find(m => m.id === nextModule);
         return `<div class="guided-next"><button class="btn btn-primary" onclick="openModule('${nextModule}', 'dialogue')">Next Module: ${next.title} →</button></div>`;
       }
-      return `<div class="guided-next"><button class="btn btn-primary" onclick="setView('assessment')">Take Final Quiz →</button></div>`;
+      return `<div class="guided-next"><button class="btn btn-primary" onclick="startFinalAssessment()">Take the Travel Check →</button></div>`;
     }
 
     function finalAssessmentQuestions() {
-      return coreModules().flatMap(module => module.quiz.map((q, index) => ({
+      return freeModules().flatMap(module => module.quiz.map((q, index) => ({
         moduleId: module.id,
         moduleTitle: module.title,
         question: q[0],
@@ -1851,28 +1838,20 @@
     }
 
     function hasResultAccess(progress = getProgress()) {
-      return true;
+      return Boolean(progress.lead?.email || progress.lead?.systemeCaptured);
     }
 
     function syncResultAccessFromUrl() {
       try {
         const url = new URL(window.location.href);
-        if (url.searchParams.get("reset") === "1") {
-          localStorage.removeItem(STORAGE_KEY);
-          sessionStorage.removeItem("realSpanishResultPending");
-          state.view = "home";
-          state.moduleId = null;
-          state.activity = "dialogue";
-          state.quizAnswers = {};
-          url.searchParams.delete("reset");
-          if (window.history?.replaceState) window.history.replaceState({}, "", url.toString());
-          return;
-        }
-        if (url.searchParams.get("showResult") !== "1") return;
+        const returnedForQuiz = url.searchParams.get("startQuiz") === "1";
+        const returnedForResult = url.searchParams.get("showResult") === "1";
+        if (!returnedForQuiz && !returnedForResult) return;
         const p = getProgress();
         p.lead = { ...(p.lead || {}), systemeCaptured: true, capturedAt: p.lead?.capturedAt || new Date().toISOString() };
         saveProgress(p, false);
         state.view = "assessment";
+        url.searchParams.delete("startQuiz");
         url.searchParams.delete("showResult");
         if (window.history?.replaceState) window.history.replaceState({}, "", url.toString());
       } catch {}
@@ -1891,11 +1870,11 @@
       const voices = spanishVoices();
       const chosen = voices.find(v => v.voiceURI === settings[role]);
       if (chosen) return chosen;
-      const femaleHints = ["female", "mujer", "monica", "mónica", "paulina", "luciana", "soledad", "marisol", "helena", "laura", "carmen", "google español"];
+      const femaleHints = ["female", "mujer", "monica", "paulina", "luciana", "soledad", "marisol", "helena", "laura", "carmen", "google español"];
       const preferred = voices.find(v => femaleHints.some(h => v.name.toLowerCase().includes(h)));
-      if (role === "local") {
-        const naturalSecondVoice = voices.find(v => femaleHints.some(h => v.name.toLowerCase().includes(h)) && v.voiceURI !== settings.narrator);
-        return naturalSecondVoice || preferred || voices[0] || null;
+      if (role === "local" && voices.length > 1) {
+        const narratorVoice = voices.find(v => v.voiceURI === settings.narrator) || preferred || voices[0];
+        return voices.find(v => v.voiceURI !== narratorVoice.voiceURI) || narratorVoice;
       }
       return preferred || voices[0] || null;
     }
@@ -2097,7 +2076,7 @@
     function getModuleProgress(moduleId) {
       const p = getProgress();
       const keys = Object.keys(p.activityLog).filter(k => k.startsWith(moduleId + ":"));
-      return Math.min(100, Math.round((keys.length / 9) * 100));
+      return Math.min(100, Math.round((keys.length / 7) * 100));
     }
 
     function allPhrases() {
@@ -2105,7 +2084,8 @@
     }
 
     function isFreeModule(moduleOrId) {
-      return true;
+      const id = typeof moduleOrId === "string" ? moduleOrId : moduleOrId.id;
+      return FREE_MODULE_IDS.includes(id);
     }
 
     function goToCourse() {
@@ -2118,32 +2098,46 @@
 
     function resultReturnUrl() {
       const url = new URL(window.location.href);
-      url.searchParams.set("showResult", "1");
+      url.searchParams.set("startQuiz", "1");
       url.hash = "";
       return url.toString();
     }
 
-    function goToResultCapture() {
+    function goToQuizCapture() {
       if (!RESULT_CAPTURE_URL) {
         document.querySelector("#local-result-form")?.classList.remove("hidden");
         document.querySelector("#local-result-form input")?.focus();
         return;
       }
-      sessionStorage.setItem("realSpanishResultPending", "1");
+      sessionStorage.setItem("realSpanishQuizPending", "1");
       window.location.href = RESULT_CAPTURE_URL;
     }
 
+    function goToResultCapture() {
+      goToQuizCapture();
+    }
+
+    function startFinalAssessment() {
+      if (hasResultAccess()) {
+        setView("assessment");
+        return;
+      }
+      goToQuizCapture();
+    }
+
     function renderUnlockPanel(context = "full") {
-      const title = context === "result"
-        ? "Keep building real travel confidence."
-        : "Your complete simulator is unlocked.";
+      const title = context === "complete"
+        ? "You finished the starter practice."
+        : context === "result"
+          ? "Ready for the complete travel simulator?"
+        : "Keep training inside the complete travel simulator.";
       return `
         <section class="unlock-panel">
-          <span class="eyebrow">✨ Complete Student Version</span>
+          <span class="eyebrow">✨ Real Spanish to Travel</span>
           <h2>${title}</h2>
-          <p>Continue practicing with dialogues, speaking prompts, review, missions, and downloadable phrase sheets across every travel situation.</p>
+          <p>Your diagnosis shows the first layer. Inside Real Spanish to Travel, you keep practicing the situations that usually make travelers freeze: restaurants, emergencies, tours, markets, directions, local conversations, and complete trip missions.</p>
           <div class="footer-actions">
-            <button class="btn btn-yellow" onclick="setView('modules')">Continue Practicing</button>
+            <button class="btn btn-yellow" onclick="goToCourse()">Keep Training for My Trip</button>
           </div>
         </section>
       `;
@@ -2156,12 +2150,12 @@
       modal.className = "modal-backdrop";
       modal.innerHTML = `
         <article class="modal-card">
-          <span class="badge orange">Course Module</span>
-          <h2>This module is available in your course.</h2>
-          <p>Open the modules page to continue practicing with the complete simulator.</p>
+          <span class="badge orange">🔒 Full Course</span>
+          <h2>This situation continues inside the complete course.</h2>
+          <p>You started with the essentials. Inside Real Spanish to Travel, you keep building confidence for restaurants, emergencies, tours, markets, directions, and real conversations with locals.</p>
           <div class="footer-actions">
-            <button class="btn btn-primary" onclick="document.querySelector('#locked-modal')?.remove(); setView('modules')">Open Modules</button>
-            <button class="btn btn-secondary" onclick="document.querySelector('#locked-modal')?.remove()">Close</button>
+            <button class="btn btn-primary" onclick="goToCourse()">Keep Training for My Trip</button>
+            <button class="btn btn-secondary" onclick="document.querySelector('#locked-modal')?.remove()">Keep Practicing Here</button>
           </div>
         </article>
       `;
@@ -2183,7 +2177,7 @@
       return `
         <section class="dashboard">
           <div class="stat"><span class="stat-icon">📚</span><strong>${p.startedModules.length}</strong><span>Modules started</span></div>
-          <div class="stat"><span class="stat-icon">🏆</span><strong>${best}</strong><span>Best final result</span></div>
+          <div class="stat"><span class="stat-icon">🏆</span><strong>${best}</strong><span>Best Travel Check</span></div>
           <div class="stat"><span class="stat-icon">✅</span><strong>${Object.keys(p.activityLog).length}</strong><span>Activities done</span></div>
           <div class="stat"><span class="stat-icon">🔥</span><strong>${p.streak}</strong><span>Day streak</span></div>
         </section>
@@ -2195,30 +2189,30 @@
       app.innerHTML = `
         <section class="hero">
           <div class="hero-inner">
-            <span class="eyebrow">🌎 Complete Student Simulator</span>
-            <h1>Practice <span class="accent">real Spanish</span> before your next trip</h1>
-            <p>Your full travel Spanish practice hub: dialogues, audio, speaking practice, missions, phrase banks, review, and progress for every module.</p>
+            <span class="eyebrow">🌎 Latin America Travel Spanish</span>
+            <h1>Find out if your Spanish is <span class="accent">travel-ready</span></h1>
+            <p>Practice real airport and hotel situations, then take a 2-minute Travel Spanish Check to see where you feel confident, where you might freeze, and what to learn next.</p>
             <div class="hero-actions">
-              <button class="btn btn-primary" onclick="setView('modules')">Open Modules →</button>
-              <button class="btn btn-secondary" onclick="setView('review')">🔁 Review Phrases</button>
+              <button class="btn btn-primary" onclick="openModule('airport')">Start Here →</button>
+              <button class="btn btn-secondary" onclick="setView('modules')">🧭 See the Path</button>
             </div>
           </div>
         </section>
         <div class="section-title">
           <div>
-            <h2>Your Course Dashboard</h2>
-            <p>${p.studentName ? `Welcome back, ${p.studentName}.` : "Choose a module, practice the activities, and track your travel Spanish confidence."}</p>
+            <h2>Your Travel Spanish Checkpoint</h2>
+            <p>${p.lead?.name ? `Welcome back, ${p.lead.name}.` : "Start here and follow the steps in order."} At the end, you'll get a practical diagnosis of what your Spanish needs before your next trip.</p>
           </div>
         </div>
-        ${renderDashboard()}
+        ${renderFreebiePath()}
         <div class="section-title">
           <div>
-            <h2>All Modules</h2>
-            <p>Work through the full simulator in order, or jump into the travel situation you need most.</p>
+            <h2>Start With Real Travel Situations</h2>
+            <p>Begin with two guided situations first. Then take the readiness check to discover what your Spanish needs next.</p>
           </div>
-          <button class="btn btn-secondary" onclick="downloadAllPhraseSheets()">Download Phrase Sheets</button>
         </div>
-        ${renderModuleGrid(modules)}
+        ${renderModuleGrid(freeModules())}
+        ${renderLockedModulesPreview()}
       `;
     }
 
@@ -2249,25 +2243,25 @@
         },
         {
           number: 3,
-          title: "Take your final quiz",
-          text: "Use the quiz as your checkpoint after the practice activities.",
-          action: quizDone ? "See My Result" : "Take Final Quiz",
-          click: "setView('assessment')",
+          title: "Take your Travel Spanish Check",
+          text: "Discover how ready your Spanish feels for real travel, what could make you freeze, and what to practice first.",
+          action: quizDone ? "See My Diagnosis" : "Start My Travel Spanish Check",
+          click: quizDone ? "setView('assessment')" : "startFinalAssessment()",
           done: quizDone,
           active: hotelDone && !quizDone
         },
         {
           number: 4,
           title: "Keep training for your trip",
-          text: "Use spaced repetition to review the phrases that matter most before your next trip.",
-          action: "Review Phrase Bank",
-          click: "setView('review')",
+          text: "Use your diagnosis as a starting point, then continue with restaurants, emergencies, tours, markets, and local conversations.",
+          action: "Keep Training for My Trip",
+          click: "goToCourse()",
           done: false,
           active: quizDone
         }
       ];
       return `
-        <div class="guided-note">Start with step 1. Each page has one clear next button, so you can move through the practice without wondering what to click.</div>
+        <div class="guided-note">Start with step 1. Each page tells you exactly what to do next, so you can practice without guessing where to click.</div>
         <section class="path-grid">
           ${path.map(step => `<article class="path-card ${step.done ? "done" : ""} ${step.active ? "active" : ""}">
             <span class="path-number">${step.number}</span>
@@ -2282,19 +2276,30 @@
     function renderModules() {
       app.innerHTML = `
         <div class="section-title">
-          <div><h2>All Modules</h2><p>Every module is unlocked in the complete student version. Practice dialogues, phrases, speaking, quizzes, variations, and travel missions.</p></div>
+          <div><h2>Start Here</h2><p>Follow these two travel situations in order. After that, take the Travel Spanish Check to get your diagnosis.</p></div>
           <button class="btn btn-secondary" onclick="downloadAllPhraseSheets()">Download PDF Phrase Sheets</button>
         </div>
-        ${renderModuleGrid(modules)}
+        ${renderFreebiePath()}
+        ${renderModuleGrid(freeModules())}
+        ${renderLockedModulesPreview()}
         <div class="footer-actions" style="justify-content:center;margin-top:34px">
-          <button class="btn btn-primary" onclick="setView('assessment')">Take Final Quiz →</button>
-          <button class="btn btn-secondary" onclick="setView('review')">Review Phrase Bank →</button>
+          <button class="btn btn-primary" onclick="startFinalAssessment()">Take the Travel Check →</button>
         </div>
       `;
     }
 
     function renderLockedModulesPreview() {
-      return "";
+      const locked = modules.filter(m => !isFreeModule(m));
+      return `
+        <div class="section-title">
+          <div>
+            <h2>Inside the Complete Simulator</h2>
+            <p>These are the next travel situations students practice inside Real Spanish to Travel after the starter diagnosis.</p>
+          </div>
+          <button class="btn btn-yellow" onclick="goToCourse()">Keep Training for My Trip</button>
+        </div>
+        ${renderModuleGrid(locked)}
+      `;
     }
 
     function renderModuleGrid(list) {
@@ -2335,16 +2340,13 @@
           ${[
             ["dialogue", "1. Dialogue"],
             ["vocabulary", "2. Phrases"],
-            ["quiz", "3. Quiz"],
-            ["fill", "4. Practice"],
-            ["speak", "5. Speaking"],
-            ["ai", "AI Coach"],
-            ["phrases", "Phrase Bank"],
-            ["variations", "Variations"],
-            ["homework", "Missions"]
+            ["fill", "3. Practice"],
+            ["speak", "4. Speaking"],
+            ["phrases", "Phrase Bank"]
           ].map(([id, label]) => `<button class="tab ${state.activity === id ? "active" : ""}" onclick="openModule('${m.id}', '${id}')">${label}</button>`).join("")}
         </nav>
         ${renderActivity(m)}
+        ${FREE_MODULE_IDS.every(id => getModuleProgress(id) >= 80) ? renderUnlockPanel("complete") : ""}
       `;
     }
 
@@ -2353,10 +2355,7 @@
       if (state.activity === "quiz") return renderQuiz(m);
       if (state.activity === "fill") return renderFill(m);
       if (state.activity === "speak") return renderSpeaking(m);
-      if (state.activity === "ai") return renderAiCoach(m);
       if (state.activity === "phrases") return renderPhrases(m);
-      if (state.activity === "variations") return renderVariations(m);
-      if (state.activity === "homework") return renderModuleHomework(m);
       return renderDialogue(m);
     }
 
@@ -2443,7 +2442,7 @@
             ${selected !== undefined ? `<div class="feedback">${selected === q[2] ? "Good job." : "Almost."} ${q[3]}</div>` : ""}
           </article>`;
         }).join("")}
-        ${renderGuidedNextButton(m.id, "quiz")}
+        ${renderGuidedNextButton(m.id, "vocabulary")}
       `;
     }
 
@@ -2470,12 +2469,12 @@
       const final = calculateFinalScore(answers);
       const complete = answered === questions.length;
 
-      if (complete && !hasResultAccess(p)) {
-        app.innerHTML = renderLeadGate(final);
+      if (!hasResultAccess(p)) {
+        app.innerHTML = renderPreQuizGate();
         return;
       }
 
-      if (complete && hasResultAccess(p)) {
+      if (complete) {
         app.innerHTML = renderResults(final);
         return;
       }
@@ -2483,8 +2482,8 @@
       app.innerHTML = `
         <div class="section-title">
           <div>
-            <h2>🎯 Final Travel Spanish Readiness Quiz</h2>
-            <p>Do this after practicing the course modules. Your result combines listening comprehension, phrase recognition, and practical travel Spanish across the full simulator.</p>
+            <h2>🎯 Travel Spanish Readiness Check</h2>
+            <p>Answer based on what you would understand or say while traveling. In less than 2 minutes, you'll see which situations feel clear and which ones need more practice.</p>
           </div>
         </div>
         <div class="card">
@@ -2502,7 +2501,7 @@
           </article>`;
         }).join("")}
         <div class="footer-actions" style="justify-content:center">
-          <button class="btn btn-secondary" onclick="resetFinalQuiz()">Start Quiz Again</button>
+          <button class="btn btn-secondary" onclick="resetFinalQuiz()">Start Check Again</button>
         </div>
       `;
     }
@@ -2516,8 +2515,8 @@
         p.finalAssessment.lastScore = final.percent;
         p.finalAssessment.bestScore = Math.max(p.finalAssessment.bestScore || 0, final.percent);
         p.finalAssessment.completedAt = new Date().toISOString();
-        if (!p.activityLog["complete:final-quiz"]) {
-          p.activityLog["complete:final-quiz"] = { done: true, at: new Date().toISOString() };
+        if (!p.activityLog["starter:final-quiz"]) {
+          p.activityLog["starter:final-quiz"] = { done: true, at: new Date().toISOString() };
           p.xp += 20;
         }
       }
@@ -2530,24 +2529,38 @@
       saveProgress(p);
     }
 
-    function renderLeadGate(final) {
+    function renderPreQuizGate() {
       const p = getProgress();
       return `
         <section class="lead-panel">
-          <span class="badge orange">Your result is ready</span>
-          <h1>See your Travel Spanish result</h1>
-          <p>Your quiz is complete. Add your details on the results page, then you'll come right back here to see your score and what to practice next.</p>
-          <div class="footer-actions">
-            <button class="btn btn-primary" onclick="goToResultCapture()">Show My Result</button>
+          <span class="badge orange">2-minute travel diagnosis</span>
+          <h1>Before you start, get your personalized Travel Spanish Check</h1>
+          <p>Leave your details on the next page, then come right back to discover how ready your Spanish is for travel, which situations could make you freeze, and what to practice first before your next trip.</p>
+          <div class="grid-two" style="margin:22px 0">
+            <article class="card">
+              <div class="label">What you'll find out</div>
+              <p>Can you handle arrival, transport, hotel questions, and useful travel phrases without freezing?</p>
+            </article>
+            <article class="card">
+              <div class="label">What you'll get after</div>
+              <p>A simple diagnosis with your score, your strongest areas, and the next situations to practice.</p>
+            </article>
           </div>
-          ${!RESULT_CAPTURE_URL ? `<div class="feedback warning">Preview mode: use this form to test the result screen. Once your capture page is connected, this step will send students through your email form.</div>` : `<p class="email-note">After submitting your details, you'll come right back here to see your personalized result.</p>`}
+          <div class="footer-actions">
+            <button class="btn btn-primary" onclick="goToQuizCapture()">Start My Travel Spanish Check</button>
+          </div>
+          ${!RESULT_CAPTURE_URL ? `<div class="feedback warning">Preview mode: use this form to test the quiz gate. Once your capture page is connected, this button sends students through your email form before the check.</div>` : `<p class="email-note">You'll enter your name and email first. Then the quiz opens immediately.</p>`}
           <form id="local-result-form" class="${RESULT_CAPTURE_URL ? "hidden" : ""}" onsubmit="submitLeadAndShowResults(event)">
             <input id="lead-name" name="name" placeholder="Your name" value="${escapeHtml(p.studentName || p.lead?.name || "")}" autocomplete="name" required>
             <input id="lead-email" name="email" placeholder="Your email" type="email" value="${escapeHtml(p.lead?.email || "")}" autocomplete="email" required>
-            <button class="btn btn-primary" type="submit">Show My Result</button>
+            <button class="btn btn-primary" type="submit">Start My Travel Spanish Check</button>
           </form>
         </section>
       `;
+    }
+
+    function renderLeadGate(final) {
+      return renderPreQuizGate();
     }
 
     async function submitLeadAndShowResults(event) {
@@ -2583,9 +2596,9 @@
     }
 
     function resultMessage(percent) {
-      if (percent >= 85) return "You are ready to handle the basics with confidence. Keep practicing speaking speed and natural responses.";
-      if (percent >= 65) return "You have a solid travel foundation. A little more practice with real-life questions will make you much faster.";
-      return "You are building the right base. Focus on the high-value phrases first and repeat the dialogues out loud.";
+      if (percent >= 85) return "Your basics are strong. Your next step is speed, pronunciation, and more natural responses so you can speak without overthinking.";
+      if (percent >= 65) return "You have a solid base. You may still freeze in faster conversations, so focus on repeating common travel questions and responses out loud.";
+      return "You are building the right foundation. Start with survival phrases and short answers for airport, hotel, food, and asking for help.";
     }
 
     function renderResults(final) {
@@ -2598,19 +2611,19 @@
       </div>`).join("");
       return `
         <section class="result-panel">
-          <span class="badge">Your Result</span>
-          <h1>${p.studentName || "Your"} Travel Spanish Readiness Result</h1>
+          <span class="badge">Your Diagnosis</span>
+          <h1>${p.lead?.name || "Your"} Travel Spanish Diagnosis</h1>
           <div class="result-score">${final.percent}%</div>
-          <p><strong>${final.score} out of ${final.total} correct.</strong> ${resultMessage(final.percent)}</p>
+          <p><strong>${final.score} out of ${final.total} travel moments handled.</strong> ${resultMessage(final.percent)}</p>
           <div class="grid-two" style="margin-top:22px">
             <article class="card">
-              <div class="label">What you practiced</div>
-              <p>You practiced real travel comprehension across the complete simulator: arrival, lodging, food, health, excursions, shopping, and local conversations.</p>
+              <div class="label">What this tells you</div>
+              <p>You practiced the situations where travelers usually freeze first: arrival, transport, hotel check-in, useful phrases, speaking practice, and practical comprehension.</p>
             </article>
             <article class="card next-step-card">
-              <div class="label">Recommended Next Step</div>
-              <p>Review your weakest modules, repeat the speaking prompts, and complete one travel mission before your next class or practice session.</p>
-              <button class="btn btn-yellow" onclick="setView('review')">Review Phrase Bank</button>
+              <div class="label">What to practice next</div>
+              <p>If you want to feel prepared for restaurants, emergencies, tours, markets, and real conversations with locals, continue inside Real Spanish to Travel.</p>
+              <button class="btn btn-yellow" onclick="goToCourse()">Keep Training for My Trip</button>
             </article>
           </div>
         </section>
@@ -2618,8 +2631,9 @@
           <h2>Your Practice Breakdown</h2>
           ${moduleRows}
         </section>
+        ${renderUnlockPanel("result")}
         <div class="footer-actions" style="justify-content:center">
-          <button class="btn btn-secondary" onclick="resetFinalQuiz()">Retake Final Quiz</button>
+          <button class="btn btn-secondary" onclick="resetFinalQuiz()">Retake Travel Check</button>
           <button class="btn btn-secondary" onclick="downloadAllPhraseSheets()">Download Phrase Sheets</button>
         </div>
       `;
@@ -2851,7 +2865,7 @@
           <div class="footer-actions"><button class="btn btn-primary" onclick="coachAnswer('${m.id}', ${i})">Get AI Feedback</button></div>
           <div id="ai-feedback-${i}" class="feedback hidden"></div>
         </article>`).join("")}
-        ${renderGuidedNextButton(m.id, "ai")}
+        <button class="btn btn-primary" onclick="openModule('${m.id}', 'phrases')">Next: Phrase Bank →</button>
       `;
     }
 
@@ -2929,7 +2943,6 @@
           ${m.countryNotes.map(n => `<article class="card"><span class="badge">${n[0]}</span><p>${n[1]}</p></article>`).join("")}
         </div>
         <div class="feedback warning">Variation notes are practical travel hints, not strict rules. Spanish changes by country, city, and even person.</div>
-        ${renderGuidedNextButton(m.id, "variations")}
       `;
     }
 
@@ -2947,7 +2960,6 @@
             <div id="mission-result-${i}" class="mission-result hidden"></div>
           </article>`;
         }).join("")}
-        ${renderGuidedNextButton(m.id, "homework")}
       `;
     }
 
@@ -3051,7 +3063,7 @@
     function renderProgress() {
       const p = getProgress();
       app.innerHTML = `
-        <div class="section-title"><div><h2>📊 Your Progress</h2><p>Local analytics for all course modules on this device.</p></div></div>
+        <div class="section-title"><div><h2>📊 Your Progress</h2><p>Track your practice and your Travel Spanish Check on this device.</p></div></div>
         <article class="card">
           <div class="field-row"><input id="student-name" placeholder="Student name" value="${p.studentName || ""}"><button class="btn btn-primary" onclick="saveStudentName()">Save Name</button></div>
         </article>
@@ -3065,12 +3077,13 @@
             <span class="status-dot ${getModuleProgress(m.id) > 0 ? "active" : ""}"></span>
           </div>`).join("")}
           <div class="detail-row">
-            <strong>🎯 Final Readiness Quiz</strong>
+            <strong>🎯 Travel Spanish Check</strong>
             <span class="translation">${p.finalAssessment?.lastScore ? p.finalAssessment.lastScore + "% latest" : "Not completed"}</span>
             <span class="translation">Best: ${p.finalAssessment?.bestScore ? p.finalAssessment.bestScore + "%" : "—"}</span>
             <span class="status-dot ${p.finalAssessment?.lastScore ? "active" : ""}"></span>
           </div>
         </section>
+        ${renderUnlockPanel()}
         <div class="footer-actions"><button class="btn btn-secondary" onclick="exportProgress()">Download Progress Report</button><button class="btn btn-secondary" onclick="resetProgress()">Reset Local Progress</button></div>
       `;
     }
@@ -3208,7 +3221,7 @@
 
     function exportProgress() {
       const p = getProgress();
-      const report = `Real Spanish Travel Simulator Progress\nStudent: ${p.studentName || "Unnamed"}\nXP: ${p.xp}\nStreak: ${p.streak}\nFinal result: ${p.finalAssessment?.lastScore ? p.finalAssessment.lastScore + "%" : "Not completed"}\n\n${modules.map(m => `${m.title}: ${getModuleProgress(m.id)}% complete`).join("\n")}`;
+      const report = `Real Spanish Travel Simulator Progress\nStudent: ${p.studentName || "Unnamed"}\nEmail: ${p.lead?.email || "Captured in Systeme / not stored here"}\nXP: ${p.xp}\nStreak: ${p.streak}\nTravel check result: ${p.finalAssessment?.lastScore ? p.finalAssessment.lastScore + "%" : "Not completed"}\n\n${modules.filter(isFreeModule).map(m => `${m.title}: ${getModuleProgress(m.id)}% complete`).join("\n")}`;
       downloadText("real-spanish-progress-report.txt", report);
     }
 
@@ -3230,7 +3243,13 @@
       };
     }
 
-    navButtons.forEach(btn => btn.addEventListener("click", () => setView(btn.dataset.view)));
+    navButtons.forEach(btn => btn.addEventListener("click", () => {
+      if (btn.dataset.view === "assessment" && !hasResultAccess()) {
+        startFinalAssessment();
+        return;
+      }
+      setView(btn.dataset.view);
+    }));
     syncResultAccessFromUrl();
     render();
   </script>
